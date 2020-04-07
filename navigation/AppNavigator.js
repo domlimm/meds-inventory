@@ -7,7 +7,7 @@ import {
   Drawer as UIKittenDrawer,
   Icon,
   DrawerHeaderFooter,
-  Button,
+  Button
 } from '@ui-kitten/components';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ import AuthScreen from '../screens/user/AuthScreen';
 import ScheduleScreen from '../screens/main/ScheduleScreen';
 import HistoryScreen from '../screens/main/HistoryScreen';
 import MedicineScreen from '../screens/main/MedicineScreen';
+import StartupScreen from '../screens/user/StartupScreen';
 import { logout } from '../store/actions/auth';
 
 const InfoIcon = () => <Icon name='person-outline' />;
@@ -29,21 +30,21 @@ const LogoutIcon = () => <Icon name='log-out' />;
 
 const defaultNavOptions = {
   headerStyle: {
-    backgroundColor: Platform.OS === 'android' ? '#3366FF' : '',
+    backgroundColor: Platform.OS === 'android' ? '#3366FF' : ''
   },
   headerTitleStyle: {
-    fontFamily: 'open-sans-bold',
+    fontFamily: 'open-sans-bold'
   },
   headerBackTitleStyle: {
-    fontFamily: 'open-sans',
+    fontFamily: 'open-sans'
   },
-  headerTintColor: Platform.OS === 'android' ? 'white' : '#ccc',
+  headerTintColor: Platform.OS === 'android' ? 'white' : '#ccc'
 };
 
 const drawerData = [
   { title: 'MEDICINE', icon: InfoIcon },
   { title: 'SCHEDULE', icon: ScheduleIcon },
-  { title: 'HISTORY', icon: HistoryIcon },
+  { title: 'HISTORY', icon: HistoryIcon }
 ];
 
 const Header = () => {
@@ -93,25 +94,32 @@ const DrawerNavigator = () => (
   </Drawer.Navigator>
 );
 
-const MainStackNavigator = createStackNavigator();
+const AuthStackNavigator = createStackNavigator();
 
-const MainNavigator = () => (
-  <MainStackNavigator.Navigator
+const AuthNavigator = () => (
+  <AuthStackNavigator.Navigator
     headerMode='none'
     screenOptions={defaultNavOptions}
   >
-    <MainStackNavigator.Screen name='Auth' component={AuthScreen} />
-  </MainStackNavigator.Navigator>
+    <AuthStackNavigator.Screen name='Auth' component={AuthScreen} />
+  </AuthStackNavigator.Navigator>
 );
 
 export default AppNavigator = () => {
   const [isAuth, setAuth] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const new_user = useSelector((state) => state.user.new_user);
 
   const authHandler = () => {
+    setLoading(true);
     return firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         setAuth(true);
+        setLoading(false);
+      } else {
+        setAuth(false);
+        setLoading(false);
+        logout();
       }
     });
   };
@@ -125,22 +133,28 @@ export default AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      {isAuth ? <DrawerNavigator /> : <MainNavigator />}
+      {isAuth && !isLoading ? (
+        <DrawerNavigator />
+      ) : !isAuth ? (
+        <AuthNavigator />
+      ) : (
+        <StartupScreen />
+      )}
     </NavigationContainer>
   );
 };
 
 const styles = StyleSheet.create({
   customDrawer: {
-    flex: 1,
+    flex: 1
   },
   btnView: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 20
   },
   logoutBtn: {
-    width: '80%',
-  },
+    width: '80%'
+  }
 });

@@ -5,7 +5,7 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   Alert,
-  ActivityIndicator,
+  ActivityIndicator
 } from 'react-native';
 import { Button, Input, Icon, Text } from '@ui-kitten/components';
 import { useDispatch } from 'react-redux';
@@ -36,10 +36,8 @@ const AuthScreen = (props) => {
       let action;
 
       if (isLogin) {
-        console.log('Loggin In');
         action = authActions.login(email, password);
       } else {
-        console.log('Signin Out');
         action = authActions.signup(email, password, name);
       }
       setError(null);
@@ -69,7 +67,7 @@ const AuthScreen = (props) => {
     <Input
       label='Name'
       style={styles.textInput}
-      placeholder='Enter your given name'
+      placeholder='Enter your Name'
       autoCompleteType='off'
       autoCapitalize='words'
       value={name}
@@ -80,14 +78,16 @@ const AuthScreen = (props) => {
   );
 
   return (
-    <KeyboardAvoidingView style={styles.screen}>
+    <KeyboardAvoidingView style={styles.screen} behavior='padding'>
       <View style={styles.authContainer}>
         <View style={styles.greetingContainer}>
           <Text category='h6' status='primary'>
             {isLogin ? 'LOGIN' : 'SIGN UP'}
           </Text>
           <Text category='s2'>
-            {isLogin ? 'Welcome back!' : 'Welcome to Medicine Tracker!'}
+            {isLogin
+              ? 'Welcome back!'
+              : 'Start tracking your medicine schedule!'}
           </Text>
         </View>
         {!isLogin && nameInput}
@@ -153,31 +153,32 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ffffff'
   },
   authContainer: {
-    height: height * 0.55,
-    paddingHorizontal: 10,
+    height: height < 560 ? '90%' : height * 0.55,
+    paddingHorizontal: 10
   },
   greetingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: 10
   },
   textInput: {
     width: '80%',
-    marginVertical: 4,
+    marginVertical: 4
   },
   buttons: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-end'
   },
   buttonContainer: {
     marginTop: 8,
-    width: '100%',
+    width: '100%'
   },
   inputLabel: {
-    color: '#070D0D',
-  },
+    color: '#070D0D'
+  }
 });
 
 export default AuthScreen;

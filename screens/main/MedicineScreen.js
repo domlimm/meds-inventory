@@ -12,7 +12,6 @@ import {
   Layout,
   TopNavigation,
   TopNavigationAction,
-  Spinner,
   Text,
 } from '@ui-kitten/components';
 
@@ -74,24 +73,24 @@ const MedicineScreen = (props) => {
       <Layout style={styles.mainContainer}>
         {addMode ? (
           <AddMedicine show={toggleAddMedicineMode} />
-        ) : medication.length > 0 && !addMedicine ? (
+        ) : medication.length > 0 && !addMode ? (
           <FlatList
             data={medication}
             refreshing={isRefresh}
-            onRefresh={retrieve_medication}
+            onRefresh={medication_handler}
             keyExtractor={(med) => med.id}
             renderItem={(medData) => {
               console.log('medData', medData);
-              return (
-                <MedicineItem
-                  name={medData.item.name}
-                  expiry={medData.item.expiry}
-                  image={medData.item.image}
-                  dosage={medData.item.dosage}
-                  remarks={medData.item.additionalRemarks}
-                  configured={medData.item.configured}
-                />
-              );
+              // return (
+              //   <MedicineItem
+              //     name={medData.item.name}
+              //     expiry={medData.item.expiry}
+              //     image={medData.item.image}
+              //     dosage={medData.item.dosage}
+              //     remarks={medData.item.additionalRemarks}
+              //     configured={medData.item.configured}
+              //   />
+              // );
             }}
           />
         ) : (
