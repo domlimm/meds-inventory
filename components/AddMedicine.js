@@ -6,7 +6,7 @@ import {
   View,
   KeyboardAvoidingView,
   Alert,
-  ActivityIndicator,
+  ActivityIndicator
 } from 'react-native';
 import {
   Button,
@@ -15,16 +15,14 @@ import {
   Select,
   Icon,
   Tooltip,
-  Layout,
+  Layout
 } from '@ui-kitten/components';
 import { PopoverPlacements } from '@ui-kitten/components/ui/popover/type';
 import { useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
 
 import { drugTypes, drugMeasurements } from '../constants/drugType';
 import AddMedicineImage from '../components/AddMedicineImage';
 import * as medActions from '../store/actions/medicine';
-// import ProcessingScreen from './ProcessingScreen';
 
 const AddMedicine = (props) => {
   const dispatch = useDispatch();
@@ -74,7 +72,7 @@ const AddMedicine = (props) => {
     let dosage = {
       type: drugType.text,
       amount: amount.toString(),
-      unit: unitType,
+      unit: unitType
     };
 
     try {
@@ -235,27 +233,27 @@ const AddMedicine = (props) => {
 const styles = StyleSheet.create({
   addMedicineView: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   addSV: {
     width: Dimensions.get('window').width * 0.9,
-    paddingHorizontal: 8,
+    paddingHorizontal: 8
   },
   inputContainer: {
-    marginVertical: 8,
+    marginVertical: 8
   },
   btnContainer: {
     marginVertical: 12,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-end'
   },
   btn: {
     width: '100%',
-    marginVertical: 5,
+    marginVertical: 5
   },
   inputLabel: {
     fontSize: 14,
-    color: '#070D0D',
-  },
+    color: '#070D0D'
+  }
 });
 
 export default AddMedicine;

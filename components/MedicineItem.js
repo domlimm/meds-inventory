@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import {
-  Card,
-  CardHeader,
-  Layout,
-  Text,
-  Button,
-  Tooltip,
-} from '@ui-kitten/components';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Image, Dimensions } from 'react-native';
+import { Card, CardHeader, Text, Button, Tooltip } from '@ui-kitten/components';
 
 const Medicine = (props) => {
-  const { name, expiry, image, dosage, remarks, configured } = props;
+  const { name, expiry, imageUrl, dosage, remarks, configured } = props;
   console.log('props', props);
 
   const [dosageTip, setDosageTip] = useState(false);
+  // const [imageLink, setImageLink] = useState('');
+
+  // useEffect(() => {
+  //   setImageLink(imageUrl);
+  // }, [props]);
 
   const toggleDosageTip = () => {
     setDosageTip(!dosageTip);
@@ -68,17 +66,13 @@ const Medicine = (props) => {
       status={configured ? 'success' : 'danger'}
       style={styles.medicineContainer}
     >
-      <Layout style={styles.imageContainer}>
-        {!image.length === 0 ? (
-          <Image
-            source={{
-              uri: image,
-            }}
-          />
+      <View style={styles.imageContainer}>
+        {!imageUrl.length === 0 ? (
+          <Image source={{ uri: imageUrl }} style={styles.image} />
         ) : (
           <Text>No image found!</Text>
         )}
-      </Layout>
+      </View>
       <Text>Dosage, Next scheduled, Image</Text>
     </Card>
   );
@@ -87,11 +81,11 @@ const Medicine = (props) => {
 const styles = StyleSheet.create({
   medicineContainer: {
     marginVertical: 10,
-    width: '85%',
+    width: Dimensions.get('window').width * 0.8
   },
   medName: {
     fontSize: 16,
-    marginTop: 2,
+    marginTop: 2
   },
   imageContainer: {
     width: '100%',
@@ -101,16 +95,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 3,
+    borderRadius: 3
+  },
+  image: {
+    width: '100%',
+    height: '100%'
   },
   cardFooter: {
     marginVertical: -5,
     marginHorizontal: -10,
-    alignItems: 'flex-end',
+    alignItems: 'flex-end'
   },
   backdrop: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+  }
 });
 
 export default Medicine;

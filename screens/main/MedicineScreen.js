@@ -5,14 +5,14 @@ import {
   StyleSheet,
   SafeAreaView,
   Dimensions,
-  FlatList,
+  FlatList
 } from 'react-native';
 import {
   Icon,
   Layout,
   TopNavigation,
   TopNavigationAction,
-  Text,
+  Text
 } from '@ui-kitten/components';
 
 import MedicineItem from '../../components/MedicineItem';
@@ -23,7 +23,6 @@ const MedicineScreen = (props) => {
   const dispatch = useDispatch();
 
   const medication = useSelector((state) => state.medicine.medicine);
-  console.log('medication', medication);
 
   const [addMode, setAddMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -80,17 +79,16 @@ const MedicineScreen = (props) => {
             onRefresh={medication_handler}
             keyExtractor={(med) => med.id}
             renderItem={(medData) => {
-              console.log('medData', medData);
-              // return (
-              //   <MedicineItem
-              //     name={medData.item.name}
-              //     expiry={medData.item.expiry}
-              //     image={medData.item.image}
-              //     dosage={medData.item.dosage}
-              //     remarks={medData.item.additionalRemarks}
-              //     configured={medData.item.configured}
-              //   />
-              // );
+              return (
+                <MedicineItem
+                  name={medData.item.name}
+                  expiry={medData.item.expiry}
+                  imageUrl={medData.item.imageUrl}
+                  dosage={medData.item.dosage}
+                  remarks={medData.item.additionalRemarks}
+                  configured={medData.item.configured}
+                />
+              );
             }}
           />
         ) : (
@@ -105,7 +103,7 @@ const MedicineScreen = (props) => {
 
 const styles = StyleSheet.create({
   AndroidSafeArea: {
-    flex: 1,
+    flex: 1
     // backgroundColor: 'white',
     // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
   },
@@ -113,13 +111,13 @@ const styles = StyleSheet.create({
     flex: 1,
     height: Dimensions.get('window').height,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   medicineListContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 });
 
 export default MedicineScreen;

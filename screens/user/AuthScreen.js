@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { Button, Input, Icon, Text } from '@ui-kitten/components';
 import { useDispatch } from 'react-redux';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import * as authActions from '../../store/actions/auth';
 

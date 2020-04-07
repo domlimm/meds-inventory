@@ -24,7 +24,7 @@ export const retrieveMedication = () => {
               resData[key].name,
               resData[key].expiry,
               resData[key].dosage,
-              resData[key].image,
+              resData[key].imageUrl,
               resData[key].additionalRemarks,
               resData[key].configured
             )
@@ -66,7 +66,7 @@ export const addMedicine = (name, expiry, dosage, img, addRemarks) => {
       .push().key;
 
     const metadata = {
-      contentType: 'image/jpeg',
+      contentType: 'image/jpeg'
     };
 
     const imageName = medicineKey + '.jpg';
@@ -82,11 +82,11 @@ export const addMedicine = (name, expiry, dosage, img, addRemarks) => {
           const medicine = {
             id: medicineKey,
             name: name,
-            image: imageUrl,
+            imageUrl: imageUrl,
             expiry: expiry,
             dosage: dosage,
             additionalRemarks: addRemarks,
-            configured: false,
+            configured: false
           };
           const updates = {};
           updates[`/users/${userId}/medicine/${medicineKey}`] = medicine;
