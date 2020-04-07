@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
-  KeyboardAvoidingView,
   Dimensions,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  ScrollView
 } from 'react-native';
 import { Button, Input, Icon, Text } from '@ui-kitten/components';
 import { useDispatch } from 'react-redux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import * as authActions from '../../store/actions/auth';
 
@@ -78,86 +80,88 @@ const AuthScreen = (props) => {
   );
 
   return (
-    <KeyboardAvoidingView style={styles.screen} behavior='padding'>
-      <View style={styles.authContainer}>
-        <View style={styles.greetingContainer}>
-          <Text category='h6' status='primary'>
-            {isLogin ? 'LOGIN' : 'SIGN UP'}
-          </Text>
-          <Text category='s2'>
-            {isLogin
-              ? 'Welcome back!'
-              : 'Start tracking your medicine schedule!'}
-          </Text>
-        </View>
-        {!isLogin && nameInput}
-        <Input
-          label='Email'
-          placeholder='Enter your E-mail'
-          style={styles.textInput}
-          keyboardType='email-address'
-          autoCompleteType='off'
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          autoCapitalize='none'
-          icon={renderEmailIcon}
-          labelStyle={styles.inputLabel}
-        />
-        <Input
-          label='Password'
-          placeholder='Enter your Password'
-          style={styles.textInput}
-          autoCompleteType='off'
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          autoCapitalize='none'
-          secureTextEntry={secureTextEntry}
-          onIconPress={reviewPassword}
-          icon={renderPWIcon}
-          labelStyle={styles.inputLabel}
-        />
-        <View style={styles.buttons}>
-          <View style={styles.buttonContainer}>
-            <Button
-              size='small'
-              style={styles.button}
-              status='basic'
-              onPress={authHandler}
-              icon={isLoading ? () => <ActivityIndicator /> : null}
-            >
-              {isLoading ? null : 'PROCEED'}
-            </Button>
+    <KeyboardAvoidingView style={styles.formContainer}>
+      <ScrollView>
+        <View style={styles.authContainer}>
+          <View style={styles.greetingContainer}>
+            <Text category='h6' status='primary'>
+              {isLogin ? 'LOGIN' : 'SIGN UP'}
+            </Text>
+            <Text category='s2'>
+              {isLogin
+                ? 'Welcome back!'
+                : 'Start tracking your medicine schedule!'}
+            </Text>
           </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              size='small'
-              onPress={() => {
-                setIsLogin((prevState) => !prevState);
-                setEmail('');
-                setPassword('');
-                setName('');
-              }}
-              style={styles.button}
-            >
-              {isLogin ? 'SIGN UP' : 'LOGIN'}
-            </Button>
+          {!isLogin && nameInput}
+          <Input
+            label='Email'
+            placeholder='Enter your E-mail'
+            style={styles.textInput}
+            keyboardType='email-address'
+            autoCompleteType='off'
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+            autoCapitalize='none'
+            icon={renderEmailIcon}
+            labelStyle={styles.inputLabel}
+          />
+          <Input
+            label='Password'
+            placeholder='Enter your Password'
+            style={styles.textInput}
+            autoCompleteType='off'
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            autoCapitalize='none'
+            secureTextEntry={secureTextEntry}
+            onIconPress={reviewPassword}
+            icon={renderPWIcon}
+            labelStyle={styles.inputLabel}
+          />
+          <View style={styles.buttons}>
+            <View style={styles.buttonContainer}>
+              <Button
+                size='small'
+                style={styles.button}
+                status='basic'
+                onPress={authHandler}
+                icon={isLoading ? () => <ActivityIndicator /> : null}
+              >
+                {isLoading ? null : 'PROCEED'}
+              </Button>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                size='small'
+                onPress={() => {
+                  setIsLogin((prevState) => !prevState);
+                  setEmail('');
+                  setPassword('');
+                  setName('');
+                }}
+                style={styles.button}
+              >
+                {isLogin ? 'SIGN UP' : 'LOGIN'}
+              </Button>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
+  formContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#ffffff'
   },
   authContainer: {
-    height: height < 560 ? '90%' : height * 0.55,
-    paddingHorizontal: 10
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: height < 560 ? '90%' : height * 0.9
   },
   greetingContainer: {
     justifyContent: 'center',
@@ -169,12 +173,12 @@ const styles = StyleSheet.create({
     marginVertical: 4
   },
   buttons: {
-    flex: 1,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    width: '80%',
+    marginTop: 10
   },
   buttonContainer: {
-    marginTop: 8,
-    width: '100%'
+    marginTop: 8
   },
   inputLabel: {
     color: '#070D0D'
