@@ -5,19 +5,19 @@ import {
   Dimensions,
   View,
   KeyboardAvoidingView,
-  Alert,
-  ActivityIndicator
+  Alert
 } from 'react-native';
 import {
   Button,
   Input,
-  Datepicker,
   Select,
   Icon,
-  Tooltip,
-  Layout
+  Spinner,
+  SelectItem,
+  IndexPath,
+  Calendar,
+  Text
 } from '@ui-kitten/components';
-import { PopoverPlacements } from '@ui-kitten/components/ui/popover/type';
 import { useDispatch } from 'react-redux';
 
 import { drugTypes, drugMeasurements } from '../constants/drugType';
@@ -28,15 +28,15 @@ const AddMedicine = (props) => {
   const dispatch = useDispatch();
 
   const [medName, setMedName] = useState('');
-  const [drugType, setDrugType] = useState(null);
-  const [unitType, setUnitType] = useState('-');
+  const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
   const [amount, setAmount] = useState('');
   const [expiryDate, setExpiryDate] = useState(null);
   const [imagePath, setImagePath] = useState();
   const [remarks, setRemarks] = useState('');
-  const [dosageTooltip, setDosageTooltip] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const drugType = drugTypes[selectedIndex.row];
 
   useEffect(() => {
     if (error) {
@@ -52,13 +52,7 @@ const AddMedicine = (props) => {
     setImagePath(imagePath);
   };
 
-  const drugTypeHandler = (type) => {
-    setDrugType(type);
-
-    let unit;
-    unit = drugMeasurements[type.text];
-    setUnitType(unit);
-  };
+  const renderSelectItem = (title) => <SelectItem key={title} title={title} />;
 
   const amtHandler = (amt) => {
     setAmount(amt.toString());
@@ -70,9 +64,9 @@ const AddMedicine = (props) => {
 
   const addMedicineHandler = async () => {
     let dosage = {
-      type: drugType.text,
+      type: drugType,
       amount: amount.toString(),
-      unit: unitType
+      unit: drugMeasurements[drugType]
     };
 
     try {
@@ -100,25 +94,24 @@ const AddMedicine = (props) => {
   const closeHandler = () => {
     setMedName('');
     setExpiryDate(null);
-    setDrugType(null);
     setImagePath(null);
     setRemarks('');
     props.show();
   };
 
-  const toggleDosageTooltip = () => {
-    setDosageTooltip(!dosageTooltip);
-  };
-
   const CalendarIcon = () => <Icon name='calendar' />;
-
-  const DosageIcon = () => <Icon name='info-outline' fill='#8b0000' />;
 
   const tDate = new Date();
   const maxDate = new Date(
     tDate.getFullYear() + 5,
     tDate.getMonth(),
     tDate.getDay()
+  );
+
+  const LoadingIndicator = () => (
+    <View>
+      <Spinner size='small' />
+    </View>
   );
 
   return (
@@ -135,35 +128,20 @@ const AddMedicine = (props) => {
               autoFocus={true}
             />
           </View>
-          <Tooltip
-            visible={dosageTooltip}
-            placement={PopoverPlacements.RIGHT}
-            text='Per single consumption'
-            onBackdropPress={toggleDosageTooltip}
-          >
-            <Button
-              appearance='outline'
-              style={{ marginBottom: 8, width: '35%' }}
-              size='small'
-              icon={DosageIcon}
-              status='warning'
-              onPress={toggleDosageTooltip}
-            >
-              DOSAGE
-            </Button>
-          </Tooltip>
           <View style={{ flexDirection: 'row' }}>
-            <View style={{ flex: 0.6, marginRight: 5, marginTop: 2 }}>
+            <View style={{ flex: 0.7, marginRight: 5, marginTop: 2 }}>
               <Select
                 label='Type'
                 labelStyle={styles.inputLabel}
-                data={drugTypes}
-                selectedOption={drugType}
-                onSelect={(type) => drugTypeHandler(type)}
-                placeholder='Medicine Type'
-              />
+                onSelect={(index) => setSelectedIndex(index)}
+                selectedIndex={selectedIndex}
+                caption='Per single consumption (Amount)'
+                value={drugType}
+              >
+                {drugTypes.map(renderSelectItem)}
+              </Select>
             </View>
-            <View style={{ flex: 0.2, marginRight: 5 }}>
+            <View style={{ flex: 0.3 }}>
               <Input
                 label='Amount'
                 labelStyle={styles.inputLabel}
@@ -173,17 +151,12 @@ const AddMedicine = (props) => {
                 returnKeyType='next'
               />
             </View>
-            <View style={{ flex: 0.2 }}>
-              <Input
-                disabled
-                label='Unit'
-                labelStyle={styles.inputLabel}
-                value={unitType}
-              />
-            </View>
           </View>
           <View style={styles.inputContainer}>
-            <Datepicker
+            <Text category='p2' style={{ marginBottom: 8 }}>
+              Select Expiry Date:
+            </Text>
+            <Calendar
               date={expiryDate}
               onSelect={setExpiryDate}
               icon={CalendarIcon}
@@ -213,9 +186,9 @@ const AddMedicine = (props) => {
               <Button
                 status='success'
                 onPress={addMedicineHandler}
-                icon={isLoading ? () => <ActivityIndicator /> : null}
+                accessoryLeft={isLoading ? () => <LoadingIndicator /> : null}
               >
-                {!isLoading && 'SAVE'}
+                {isLoading ? 'LOADING' : 'SAVE'}
               </Button>
             </View>
             <View style={styles.btn}>
@@ -240,15 +213,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8
   },
   inputContainer: {
-    marginVertical: 8
+    marginVertical: 10
   },
   btnContainer: {
     marginVertical: 12,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    flexDirection: 'row'
   },
   btn: {
-    width: '100%',
-    marginVertical: 5
+    marginHorizontal: 5,
+    flex: 0.5
   },
   inputLabel: {
     fontSize: 14,

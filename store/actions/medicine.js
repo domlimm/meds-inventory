@@ -82,7 +82,7 @@ export const addMedicine = (name, expiry, dosage, img, addRemarks) => {
           const medicine = {
             id: medicineKey,
             name: name,
-            imageUrl: imageUrl,
+            imageUrl: imageUrl.toString(),
             expiry: expiry,
             dosage: dosage,
             additionalRemarks: addRemarks,

@@ -5,9 +5,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Drawer as UIKittenDrawer,
+  DrawerItem,
   Icon,
-  DrawerHeaderFooter,
-  Button
+  Button,
+  Text,
+  Layout,
+  Divider
 } from '@ui-kitten/components';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -20,13 +23,15 @@ import MedicineScreen from '../screens/main/MedicineScreen';
 import StartupScreen from '../screens/user/StartupScreen';
 import { logout } from '../store/actions/auth';
 
-const InfoIcon = () => <Icon name='person-outline' />;
+const InfoIcon = (props) => <Icon {...props} name='person-outline' />;
 
-const ScheduleIcon = () => <Icon name='calendar-outline' />;
+const ScheduleIcon = (props) => <Icon {...props} name='calendar-outline' />;
 
-const HistoryIcon = () => <Icon name='checkmark-square-outline' />;
+const HistoryIcon = (props) => (
+  <Icon {...props} name='checkmark-square-outline' />
+);
 
-const LogoutIcon = () => <Icon name='log-out' />;
+const LogoutIcon = (props) => <Icon {...props} name='log-out' />;
 
 const defaultNavOptions = {
   headerStyle: {
@@ -41,43 +46,39 @@ const defaultNavOptions = {
   headerTintColor: Platform.OS === 'android' ? 'white' : '#ccc'
 };
 
-const drawerData = [
-  { title: 'MEDICINE', icon: InfoIcon },
-  { title: 'SCHEDULE', icon: ScheduleIcon },
-  { title: 'HISTORY', icon: HistoryIcon }
-];
-
 const Header = () => {
   const name = useSelector((state) => state.auth.name);
   return (
-    <DrawerHeaderFooter
-      title={name}
-      description='What would you like to do today?'
-    />
+    <Layout level='3' style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
+      <Text category='s1' style={{ marginBottom: 4 }}>{`Hello, ${name}`}</Text>
+      <Text category='c1'>What would you like to do today?</Text>
+      <Divider />
+    </Layout>
   );
 };
 
-const DrawerContent = ({ navigation, state }) => {
-  const onSelect = (index) => {
-    navigation.navigate(state.routeNames[index]);
-  };
-
-  return (
-    <SafeAreaView style={styles.customDrawer}>
-      <UIKittenDrawer
-        data={drawerData}
-        onSelect={onSelect}
-        selectedIndex={state.index}
-        header={() => <Header />}
-      />
-      <View style={styles.btnView}>
-        <Button icon={LogoutIcon} style={styles.logoutBtn} onPress={logout}>
-          LOGOUT
-        </Button>
-      </View>
-    </SafeAreaView>
-  );
-};
+const DrawerContent = ({ navigation, state }) => (
+  <SafeAreaView style={styles.customDrawer}>
+    <UIKittenDrawer
+      onSelect={(index) => navigation.navigate(state.routeNames[index.row])}
+      selectedIndex={state.index}
+      header={() => <Header />}
+    >
+      <DrawerItem title='MEDICINE' accessoryLeft={InfoIcon} />
+      <DrawerItem title='SCHEDULE' accessoryLeft={ScheduleIcon} />
+      <DrawerItem title='HISTORY' accessoryLeft={HistoryIcon} />
+    </UIKittenDrawer>
+    <View style={styles.btnView}>
+      <Button
+        accessoryLeft={LogoutIcon}
+        style={styles.logoutBtn}
+        onPress={logout}
+      >
+        LOGOUT
+      </Button>
+    </View>
+  </SafeAreaView>
+);
 
 const Drawer = createDrawerNavigator();
 
@@ -131,11 +132,13 @@ export default AppNavigator = () => {
     };
   }, []);
 
+  console.log('isLoading', isLoading, 'isAuth', isAuth);
+
   return (
     <NavigationContainer>
       {isAuth && !isLoading ? (
         <DrawerNavigator />
-      ) : !isAuth ? (
+      ) : !isAuth & !isLoading ? (
         <AuthNavigator />
       ) : (
         <StartupScreen />

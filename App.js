@@ -5,7 +5,7 @@ import ReduxThunk from 'redux-thunk';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
-import { mapping, light as lightTheme } from '@eva-design/eva';
+import * as eva from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 // init firebase
@@ -21,7 +21,7 @@ import medReducer from './store/reducers/medicine';
 const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
-  medicine: medReducer,
+  medicine: medReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
@@ -29,7 +29,7 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 const fetchFonts = () => {
   return Font.loadAsync({
     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
-    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
   });
 };
 
@@ -53,9 +53,9 @@ export default function App() {
     <Provider store={store}>
       <IconRegistry icons={[EvaIconsPack, AntDesignIconsPack]} />
       <ApplicationProvider
-        mapping={mapping}
+        {...eva}
         customMapping={customMapping}
-        theme={lightTheme}
+        theme={eva.light}
       >
         <AppNavigator />
       </ApplicationProvider>

@@ -4,11 +4,11 @@ import {
   StyleSheet,
   Dimensions,
   Alert,
-  ActivityIndicator,
   KeyboardAvoidingView,
-  ScrollView
+  ScrollView,
+  TouchableWithoutFeedback
 } from 'react-native';
-import { Button, Input, Icon, Text } from '@ui-kitten/components';
+import { Button, Input, Icon, Text, Spinner } from '@ui-kitten/components';
 import { useDispatch } from 'react-redux';
 
 import * as authActions from '../../store/actions/auth';
@@ -55,13 +55,20 @@ const AuthScreen = (props) => {
     setSecureTextEntry(!secureTextEntry);
   };
 
-  // UI/UX
-  const renderEmailIcon = () => <Icon name='email-outline' />;
+  const renderEmailIcon = (props) => <Icon {...props} name='email-outline' />;
 
-  const renderPersonIcon = () => <Icon name='person-outline' />;
+  const renderPersonIcon = (props) => <Icon {...props} name='person-outline' />;
 
-  const renderPWIcon = () => (
-    <Icon name={secureTextEntry ? 'eye-off' : 'eye'} />
+  const renderPWIcon = (props) => (
+    <TouchableWithoutFeedback onPress={reviewPassword}>
+      <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
+    </TouchableWithoutFeedback>
+  );
+
+  const LoadingIndicator = () => (
+    <View>
+      <Spinner size='small' />
+    </View>
   );
 
   const nameInput = (
@@ -72,7 +79,7 @@ const AuthScreen = (props) => {
       autoCompleteType='off'
       autoCapitalize='words'
       value={name}
-      icon={renderPersonIcon}
+      accessoryRight={renderPersonIcon}
       onChangeText={(text) => setName(text)}
       labelStyle={styles.inputLabel}
     />
@@ -102,7 +109,7 @@ const AuthScreen = (props) => {
             onChangeText={(text) => setEmail(text)}
             value={email}
             autoCapitalize='none'
-            icon={renderEmailIcon}
+            accessoryRight={renderEmailIcon}
             labelStyle={styles.inputLabel}
           />
           <Input
@@ -114,8 +121,7 @@ const AuthScreen = (props) => {
             value={password}
             autoCapitalize='none'
             secureTextEntry={secureTextEntry}
-            onIconPress={reviewPassword}
-            icon={renderPWIcon}
+            accessoryRight={renderPWIcon}
             labelStyle={styles.inputLabel}
           />
           <View style={styles.buttons}>
@@ -125,9 +131,9 @@ const AuthScreen = (props) => {
                 style={styles.button}
                 status='basic'
                 onPress={authHandler}
-                icon={isLoading ? () => <ActivityIndicator /> : null}
+                accessoryLeft={isLoading ? () => <LoadingIndicator /> : null}
               >
-                {isLoading ? null : 'PROCEED'}
+                {isLoading ? 'LOADING' : 'PROCEED'}
               </Button>
             </View>
             <View style={styles.buttonContainer}>

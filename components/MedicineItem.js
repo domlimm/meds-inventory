@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Image, Dimensions } from 'react-native';
-import { Card, CardHeader, Text, Button, Tooltip } from '@ui-kitten/components';
+import { Text, Button, Tooltip, Layout, Card } from '@ui-kitten/components';
 
-const Medicine = (props) => {
+const MedicineItem = (props) => {
   const { name, expiry, imageUrl, dosage, remarks, configured } = props;
-  console.log('props', props);
+  // console.log('props', props);
 
   const [dosageTip, setDosageTip] = useState(false);
   // const [imageLink, setImageLink] = useState('');
@@ -18,16 +18,16 @@ const Medicine = (props) => {
   };
 
   const Header = () => (
-    <CardHeader>
+    <Layout style={styles.cardHeader}>
       <Text category='label' style={styles.medName}>
         {name}
       </Text>
-    </CardHeader>
+    </Layout>
   );
 
   const Footer = () => (
-    <View style={styles.cardFooter}>
-      <Tooltip
+    <Layout style={styles.cardFooter}>
+      {/* <Tooltip
         visible={dosageTip}
         placement={'left'}
         text='EXPIRY DATE'
@@ -42,8 +42,8 @@ const Medicine = (props) => {
         >
           {expiry}
         </Button>
-      </Tooltip>
-    </View>
+      </Tooltip> */}
+    </Layout>
   );
 
   // Beware that when using a file path as Image source on Android,
@@ -66,13 +66,13 @@ const Medicine = (props) => {
       status={configured ? 'success' : 'danger'}
       style={styles.medicineContainer}
     >
-      <View style={styles.imageContainer}>
+      <Layout style={styles.imageContainer}>
         {!imageUrl.length === 0 ? (
           <Image source={{ uri: imageUrl }} style={styles.image} />
         ) : (
           <Text>No image found!</Text>
         )}
-      </View>
+      </Layout>
       <Text>Dosage, Next scheduled, Image</Text>
     </Card>
   );
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   imageContainer: {
-    width: '100%',
+    flex: 1,
     height: 125,
     marginBottom: 10,
     justifyContent: 'center',
@@ -98,8 +98,13 @@ const styles = StyleSheet.create({
     borderRadius: 3
   },
   image: {
+    flex: 1,
     width: '100%',
     height: '100%'
+  },
+  cardHeader: {
+    paddingHorizontal: 10,
+    paddingVertical: 10
   },
   cardFooter: {
     marginVertical: -5,
@@ -111,4 +116,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Medicine;
+export default MedicineItem;

@@ -1,18 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  Dimensions,
-  FlatList
-} from 'react-native';
+import { StyleSheet, SafeAreaView, Dimensions, FlatList } from 'react-native';
 import {
   Icon,
   Layout,
   TopNavigation,
-  TopNavigationAction,
-  Text
+  TopNavigationAction
 } from '@ui-kitten/components';
 
 import MedicineItem from '../../components/MedicineItem';
@@ -27,7 +20,6 @@ const MedicineScreen = (props) => {
   const [addMode, setAddMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefresh, setIsRefresh] = useState(false);
-  const [error, setError] = useState(null);
   // Snackbar
 
   const medication_handler = useCallback(async () => {
@@ -40,23 +32,24 @@ const MedicineScreen = (props) => {
   }, [dispatch, isLoading]);
 
   useEffect(() => {
+    console.log('Refreshing Data');
     setIsLoading(true);
     const unsubscribe = medication_handler;
     return () => {
       unsubscribe();
     };
-  }, [dispatch, medication_handler]);
+  }, [medication_handler]);
 
   const toggleAddMedicineMode = () => {
-    console.log('[toggleAddMedicineMode]');
     setAddMode(!addMode);
   };
 
-  const addMedicineIcon = () => <Icon name='file-add-outline' />;
+  const addMedicineIcon = (props) => (
+    <Icon {...props} name='file-add-outline' />
+  );
 
-  const AddMedAction = (props) => (
+  const AddMedAction = () => (
     <TopNavigationAction
-      {...props}
       icon={addMedicineIcon}
       onPress={toggleAddMedicineMode}
     />
@@ -67,34 +60,37 @@ const MedicineScreen = (props) => {
       <TopNavigation
         alignment='center'
         title={addMode ? 'ADD MEDICINE' : 'MEDICATION LIST'}
-        rightControls={AddMedAction()}
+        accessoryRight={AddMedAction}
       />
       <Layout style={styles.mainContainer}>
         {addMode ? (
           <AddMedicine show={toggleAddMedicineMode} />
-        ) : medication.length > 0 && !addMode ? (
-          <FlatList
-            data={medication}
-            refreshing={isRefresh}
-            onRefresh={medication_handler}
-            keyExtractor={(med) => med.id}
-            renderItem={(medData) => {
-              return (
-                <MedicineItem
-                  name={medData.item.name}
-                  expiry={medData.item.expiry}
-                  imageUrl={medData.item.imageUrl}
-                  dosage={medData.item.dosage}
-                  remarks={medData.item.additionalRemarks}
-                  configured={medData.item.configured}
-                />
-              );
-            }}
-          />
         ) : (
-          <View>
-            <Text>Start adding your medicine!</Text>
-          </View>
+          medication.length > 0 &&
+          !addMode && (
+            <FlatList
+              data={medication}
+              refreshing={isRefresh}
+              onRefresh={medication_handler}
+              keyExtractor={(med) => med.id}
+              renderItem={(medData) => {
+                return (
+                  <MedicineItem
+                    name={medData.item.name}
+                    expiry={medData.item.expiry}
+                    imageUrl={medData.item.imageUrl}
+                    dosage={medData.item.dosage}
+                    remarks={medData.item.additionalRemarks}
+                    configured={medData.item.configured}
+                  />
+                );
+              }}
+            />
+            // ) : (
+            //   <View>
+            //     <Text>Start adding your medicine!</Text>
+            //   </View>
+          )
         )}
       </Layout>
     </SafeAreaView>
