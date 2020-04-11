@@ -7,6 +7,7 @@ import * as Font from 'expo-font';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { default as baseTheme } from './utils/custom-theme.json';
 
 // init firebase
 import './firebase';
@@ -55,7 +56,7 @@ export default function App() {
       <ApplicationProvider
         {...eva}
         customMapping={customMapping}
-        theme={eva.light}
+        theme={{ ...eva.light, ...baseTheme }}
       >
         <AppNavigator />
       </ApplicationProvider>

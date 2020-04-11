@@ -114,16 +114,19 @@ const AddMedicine = (props) => {
     </View>
   );
 
+  const InputLabel = (props) => (
+    <Text style={[styles.inputLabel, props.style]}>{props.title}</Text>
+  );
+
   return (
     <KeyboardAvoidingView style={styles.addMedicineView}>
       <ScrollView>
         <View style={styles.addSV}>
           <View style={styles.inputContainer}>
             <Input
-              label='Medicine Name'
+              label={<InputLabel title='Medicine Name' />}
               value={medName}
               onChangeText={medNameChangeHandler}
-              labelStyle={styles.inputLabel}
               style={styles.input}
               autoFocus={true}
             />
@@ -131,8 +134,7 @@ const AddMedicine = (props) => {
           <View style={{ flexDirection: 'row' }}>
             <View style={{ flex: 0.7, marginRight: 5, marginTop: 2 }}>
               <Select
-                label='Type'
-                labelStyle={styles.inputLabel}
+                label={<InputLabel title='Type' />}
                 onSelect={(index) => setSelectedIndex(index)}
                 selectedIndex={selectedIndex}
                 caption='Per single consumption (Amount)'
@@ -143,8 +145,7 @@ const AddMedicine = (props) => {
             </View>
             <View style={{ flex: 0.3 }}>
               <Input
-                label='Amount'
-                labelStyle={styles.inputLabel}
+                label={<InputLabel title='Amount' />}
                 keyboardType='numeric'
                 value={amount}
                 onChangeText={amtHandler}
@@ -153,16 +154,12 @@ const AddMedicine = (props) => {
             </View>
           </View>
           <View style={styles.inputContainer}>
-            <Text category='p2' style={{ marginBottom: 8 }}>
-              Select Expiry Date:
-            </Text>
+            <InputLabel style={{ marginBottom: 8 }} title='Expiry Date' />
             <Calendar
               date={expiryDate}
               onSelect={setExpiryDate}
               icon={CalendarIcon}
               backdropStyle={styles.backdrop}
-              label='Expiry Date'
-              labelStyle={styles.inputLabel}
               min={new Date()}
               max={maxDate}
             />
@@ -172,10 +169,9 @@ const AddMedicine = (props) => {
           </View>
           <View style={styles.inputContainer}>
             <Input
-              label='Additional Remarks'
+              label={<InputLabel title='Additional Remarks' />}
               value={remarks}
               onChangeText={remarksChangeHandler}
-              labelStyle={styles.inputLabel}
               style={styles.input}
               multiline
               numberOfLines={5}

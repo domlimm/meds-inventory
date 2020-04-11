@@ -50,7 +50,7 @@ const Header = () => {
   const name = useSelector((state) => state.auth.name);
   return (
     <Layout level='3' style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
-      <Text category='s1' style={{ marginBottom: 4 }}>{`Hello, ${name}`}</Text>
+      <Text category='s1' style={{ marginBottom: 4 }}>{`Hello, ${name}!`}</Text>
       <Text category='c1'>What would you like to do today?</Text>
       <Divider />
     </Layout>

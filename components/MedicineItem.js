@@ -4,14 +4,8 @@ import { Text, Button, Tooltip, Layout, Card } from '@ui-kitten/components';
 
 const MedicineItem = (props) => {
   const { name, expiry, imageUrl, dosage, remarks, configured } = props;
-  // console.log('props', props);
 
   const [dosageTip, setDosageTip] = useState(false);
-  // const [imageLink, setImageLink] = useState('');
-
-  // useEffect(() => {
-  //   setImageLink(imageUrl);
-  // }, [props]);
 
   const toggleDosageTip = () => {
     setDosageTip(!dosageTip);
@@ -66,13 +60,13 @@ const MedicineItem = (props) => {
       status={configured ? 'success' : 'danger'}
       style={styles.medicineContainer}
     >
-      <Layout style={styles.imageContainer}>
-        {!imageUrl.length === 0 ? (
+      <View style={styles.imageContainer}>
+        {imageUrl ? (
           <Image source={{ uri: imageUrl }} style={styles.image} />
         ) : (
           <Text>No image found!</Text>
         )}
-      </Layout>
+      </View>
       <Text>Dosage, Next scheduled, Image</Text>
     </Card>
   );
@@ -88,7 +82,7 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   imageContainer: {
-    flex: 1,
+    width: '100%',
     height: 125,
     marginBottom: 10,
     justifyContent: 'center',
@@ -98,7 +92,6 @@ const styles = StyleSheet.create({
     borderRadius: 3
   },
   image: {
-    flex: 1,
     width: '100%',
     height: '100%'
   },
