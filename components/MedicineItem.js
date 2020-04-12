@@ -1,112 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, Dimensions } from 'react-native';
-import { Text, Button, Tooltip, Layout, Card } from '@ui-kitten/components';
+import React from 'react';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { Text, Button, Layout, Card } from '@ui-kitten/components';
+import { useNavigation } from '@react-navigation/native';
+
+const { width, height } = Dimensions.get('window');
 
 const MedicineItem = (props) => {
-  const { name, expiry, imageUrl, dosage, remarks, configured } = props;
-
-  const [dosageTip, setDosageTip] = useState(false);
-
-  const toggleDosageTip = () => {
-    setDosageTip(!dosageTip);
-  };
-
-  const Header = () => (
-    <Layout style={styles.cardHeader}>
-      <Text category='label' style={styles.medName}>
-        {name}
-      </Text>
-    </Layout>
-  );
-
-  const Footer = () => (
-    <Layout style={styles.cardFooter}>
-      {/* <Tooltip
-        visible={dosageTip}
-        placement={'left'}
-        text='EXPIRY DATE'
-        onBackdropPress={toggleDosageTip}
-        backdropStyle={styles.backdrop}
-      >
-        <Button
-          appearance='outline'
-          status='info'
-          onPress={toggleDosageTip}
-          size='small'
-        >
-          {expiry}
-        </Button>
-      </Tooltip> */}
-    </Layout>
-  );
-
-  // Beware that when using a file path as Image source on Android,
-  // you must prepend "file://"" before the file path
-  // imageView = (
-  //   <Image
-  //     source={{
-  //       uri:
-  //         Platform.OS === 'android'
-  //           ? 'file://' + res.path()
-  //           : '' + res.path()
-  //     }}
-  //   />
-  // );
+  const { id, name, dosage, configured } = props;
+  const navigation = useNavigation();
 
   return (
     <Card
-      header={Header}
-      footer={Footer}
       status={configured ? 'success' : 'danger'}
       style={styles.medicineContainer}
+      onPress={() =>
+        navigation.navigate('MedicineDetail', { medId: id, medName: name })
+      }
     >
-      <View style={styles.imageContainer}>
-        {imageUrl ? (
-          <Image source={{ uri: imageUrl }} style={styles.image} />
-        ) : (
-          <Text>No image found!</Text>
-        )}
-      </View>
-      <Text>Dosage, Next scheduled, Image</Text>
+      <Text category='h6' style={styles.medName}>
+        {name}
+      </Text>
     </Card>
   );
 };
 
 const styles = StyleSheet.create({
   medicineContainer: {
-    marginVertical: 10,
-    width: Dimensions.get('window').width * 0.8
+    margin: 14,
+    width: width * 0.42,
+    height: height * 0.36,
+    borderRadius: 12,
+    elevation: 10
   },
   medName: {
-    fontSize: 16,
     marginTop: 2
   },
   imageContainer: {
     width: '100%',
     height: 125,
     marginBottom: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 3
+    borderRadius: 5
   },
   image: {
     width: '100%',
     height: '100%'
-  },
-  cardHeader: {
-    paddingHorizontal: 10,
-    paddingVertical: 10
-  },
-  cardFooter: {
-    marginVertical: -5,
-    marginHorizontal: -10,
-    alignItems: 'flex-end'
-  },
-  backdrop: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   }
+  // cardHeader: {
+  //   paddingHorizontal: 10,
+  //   paddingVertical: 10
+  // },
+  // cardFooter: {
+  //   marginVertical: -5,
+  //   marginHorizontal: -10,
+  //   alignItems: 'flex-end'
+  // },
 });
 
 export default MedicineItem;

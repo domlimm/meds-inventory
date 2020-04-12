@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, View, StyleSheet, Alert } from 'react-native';
 import { Icon, Button, Text } from '@ui-kitten/components';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 
-const AddMedicineImage = props => {
+const AddMedicineImage = (props) => {
   const [medImg, setMedImg] = useState(null);
 
-  const { convert } = props;
+  useEffect(() => {
+    if (!props.loading) {
+      setMedImg(null);
+    }
+  }, [props.loading]);
 
   const verifyPermissions = () => {
     Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL)
-      .then(result => {
+      .then((result) => {
         if (result.status !== 'granted') {
           Alert.alert(
             'Insufficient permissions!',
@@ -21,7 +25,7 @@ const AddMedicineImage = props => {
           return false;
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
     return true;
   };
 
@@ -34,7 +38,7 @@ const AddMedicineImage = props => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.5 // 1 highest
-    }).then(image => {
+    }).then((image) => {
       setMedImg(image.uri);
       props.setImage(image.uri);
     });
@@ -50,7 +54,7 @@ const AddMedicineImage = props => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.5 // 1 highest
-    }).then(image => {
+    }).then((image) => {
       setMedImg(image.uri);
       props.setImage(image.uri);
     });

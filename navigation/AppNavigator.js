@@ -19,11 +19,13 @@ import firebase from '../firebase';
 import AuthScreen from '../screens/user/AuthScreen';
 import ScheduleScreen from '../screens/main/ScheduleScreen';
 import HistoryScreen from '../screens/main/HistoryScreen';
-import MedicineScreen from '../screens/main/MedicineScreen';
+import MedicationScreen from '../screens/main/MedicationScreen';
 import StartupScreen from '../screens/user/StartupScreen';
+import AddMedicineScreen from '../screens/main/AddMedicine';
+import MedicineDetailScreen from '../screens/main/MedicineDetailScreen';
 import { logout } from '../store/actions/auth';
 
-const InfoIcon = (props) => <Icon {...props} name='person-outline' />;
+const InfoIcon = (props) => <Icon {...props} name='shopping-bag-outline' />;
 
 const ScheduleIcon = (props) => <Icon {...props} name='calendar-outline' />;
 
@@ -64,7 +66,7 @@ const DrawerContent = ({ navigation, state }) => (
       selectedIndex={state.index}
       header={() => <Header />}
     >
-      <DrawerItem title='MEDICINE' accessoryLeft={InfoIcon} />
+      <DrawerItem title='MEDICATION' accessoryLeft={InfoIcon} />
       <DrawerItem title='SCHEDULE' accessoryLeft={ScheduleIcon} />
       <DrawerItem title='HISTORY' accessoryLeft={HistoryIcon} />
     </UIKittenDrawer>
@@ -86,10 +88,15 @@ const DrawerNavigator = () => (
   <Drawer.Navigator
     screenOptions={defaultNavOptions}
     drawerContent={(props) => <DrawerContent {...props} />}
-    initialRouteName='Medicine'
-    backBehavior='order'
+    initialRouteName='Medication'
   >
-    <Drawer.Screen name='Medicine' component={MedicineScreen} />
+    <Drawer.Screen name='Medication' component={MedicationScreen} />
+    <Drawer.Screen
+      name='AddMedicine'
+      component={AddMedicineScreen}
+      options={{ unmountOnBlur: true }}
+    />
+    <Drawer.Screen name='MedicineDetail' component={MedicineDetailScreen} />
     <Drawer.Screen name='Schedule' component={ScheduleScreen} />
     <Drawer.Screen name='History' component={HistoryScreen} />
   </Drawer.Navigator>
