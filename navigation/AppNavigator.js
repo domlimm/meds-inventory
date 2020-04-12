@@ -116,7 +116,7 @@ const AuthNavigator = () => (
 export default AppNavigator = () => {
   const [isAuth, setAuth] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const new_user = useSelector((state) => state.user.new_user);
+  // const new_user = useSelector((state) => state.user.new_user);
 
   const authHandler = () => {
     setLoading(true);

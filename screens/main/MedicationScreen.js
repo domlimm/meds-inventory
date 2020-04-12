@@ -13,7 +13,8 @@ import {
   TopNavigation,
   TopNavigationAction,
   Spinner,
-  Text
+  Text,
+  Input
 } from '@ui-kitten/components';
 
 import MedicineItem from '../../components/MedicineItem';
@@ -23,9 +24,9 @@ const MedicationScreen = (props) => {
   const dispatch = useDispatch();
 
   const medication = useSelector((state) => state.medicine.medicine);
-
   const [isLoading, setIsLoading] = useState(false);
   const [isRefresh, setIsRefresh] = useState(false);
+  const [search, setSearch] = useState('');
 
   const medication_handler = useCallback(async () => {
     setIsRefresh(true);
@@ -34,7 +35,6 @@ const MedicationScreen = (props) => {
   }, [dispatch, isLoading]);
 
   useEffect(() => {
-    console.log('Entered useEffect');
     setIsLoading(true);
     const unsubscribe = props.navigation.addListener(
       'focus',
@@ -49,6 +49,7 @@ const MedicationScreen = (props) => {
   const addMedicineIcon = (props) => (
     <Icon {...props} name='file-add-outline' />
   );
+  const searchIcon = (props) => <Icon {...props} name='search-outline' />;
 
   const AddMedAction = () => (
     <TopNavigationAction
@@ -66,10 +67,22 @@ const MedicationScreen = (props) => {
         title='MEDICATION LIST'
         accessoryRight={AddMedAction}
       />
+      <Layout style={styles.searchContainer}>
+        <Input
+          value={search}
+          accessoryLeft={searchIcon}
+          placeholder='Which medicine are you looking for?'
+          style={styles.searchInput}
+        />
+      </Layout>
       <Layout style={styles.mainContainer}>
         {isLoading ? (
           <Spinner />
-        ) : medication.length > 0 ? (
+        ) : medication.length === 0 ? (
+          <View>
+            <Text>Start adding your medicine!</Text>
+          </View>
+        ) : (
           <FlatList
             data={medication}
             refreshing={isRefresh}
@@ -90,10 +103,6 @@ const MedicationScreen = (props) => {
               );
             }}
           />
-        ) : (
-          <View>
-            <Text>Start adding your medicine!</Text>
-          </View>
         )}
       </Layout>
     </SafeAreaView>
@@ -111,6 +120,14 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  searchContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 8
+  },
+  searchInput: {
+    width: Dimensions.get('window').width * 0.92
   }
 });
 

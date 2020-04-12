@@ -71,6 +71,9 @@ const AddMedicine = (props) => {
       unit: drugMeasurements[drugType]
     };
 
+    if (!imagePath) {
+    }
+
     try {
       setIsLoading(true);
       setError(null);

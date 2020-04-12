@@ -45,20 +45,6 @@ export const addMedicine = (name, expiry, dosage, img, addRemarks) => {
 
     const userId = firebase.auth().currentUser.uid;
 
-    const imageBlob = await new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function () {
-        resolve(xhr.response);
-      };
-      xhr.onerror = function (e) {
-        console.log(e);
-        reject(new TypeError('Network request failed'));
-      };
-      xhr.responseType = 'blob';
-      xhr.open('GET', img, true);
-      xhr.send(null);
-    });
-
     let medicineKey = firebase
       .database()
       .ref()
@@ -75,36 +61,86 @@ export const addMedicine = (name, expiry, dosage, img, addRemarks) => {
       .ref()
       .child(`/medicine/${userId}/${imageName}`);
 
-    storageRef.put(imageBlob, metadata).then(() => {
-      storageRef
-        .getDownloadURL()
-        .then((imageUrl) => {
-          const medicine = {
-            id: medicineKey,
-            name: name,
-            imageUrl: imageUrl.toString(),
-            expiry: expiry,
-            dosage: dosage,
-            additionalRemarks: addRemarks,
-            configured: false
-          };
-          const updates = {};
-          updates[`/users/${userId}/medicine/${medicineKey}`] = medicine;
+    if (img) {
+      const imageBlob = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+          resolve(xhr.response);
+        };
+        xhr.onerror = function (e) {
+          console.log(e);
+          reject(new TypeError('Network request failed'));
+        };
+        xhr.responseType = 'blob';
+        xhr.open('GET', img, true);
+        xhr.send(null);
+      });
 
-          firebase
-            .database()
-            .ref()
-            .update(updates)
-            .then(async () => {
-              await dispatch({ type: ADD_MEDICINE, addMed: medicine });
-            })
-            .catch((err) => {
-              throw new Error(err.message);
-            });
-        })
-        .catch((err) => {
-          throw new Error('Error getting storage reference.', err);
+      storageRef.put(imageBlob, metadata).then(() => {
+        storageRef
+          .getDownloadURL()
+          .then((imageUrl) => {
+            const medicineWithImage = {
+              id: medicineKey,
+              name: name,
+              imageUrl: imageUrl.toString(),
+              expiry: expiry,
+              dosage: dosage,
+              additionalRemarks: addRemarks,
+              configured: false
+            };
+            const updates = {};
+            updates[
+              `/users/${userId}/medicine/${medicineKey}`
+            ] = medicineWithImage;
+
+            firebase
+              .database()
+              .ref()
+              .update(updates)
+              .then(async () => {
+                await dispatch({
+                  type: ADD_MEDICINE,
+                  addMed: medicineWithImage
+                });
+              })
+              .catch((err) => {
+                throw new Error(err.message);
+              });
+          })
+          .catch((err) => {
+            throw new Error('Error getting storage reference.', err);
+          });
+      });
+
+      return;
+    }
+
+    const medicine = {
+      id: medicineKey,
+      name: name,
+      imageUrl: 'blank',
+      expiry: expiry,
+      dosage: dosage,
+      additionalRemarks: addRemarks,
+      configured: false
+    };
+
+    const updates = {};
+    updates[`/users/${userId}/medicine/${medicineKey}`] = medicine;
+
+    firebase
+      .database()
+      .ref()
+      .update(updates)
+      .then(async () => {
+        await dispatch({
+          type: ADD_MEDICINE,
+          addMed: medicine
         });
-    });
+      })
+      .catch((err) => {
+        throw new Error(err.message);
+      });
   };
 };

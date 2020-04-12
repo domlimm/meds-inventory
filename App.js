@@ -16,12 +16,10 @@ import { default as customMapping } from './utils/custom-mapping.json';
 import { AntDesignIconsPack } from './utils/ant-design-icons';
 import AppNavigator from './navigation/AppNavigator';
 import authReducer from './store/reducers/auth';
-import userReducer from './store/reducers/user';
 import medReducer from './store/reducers/medicine';
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  user: userReducer,
   medicine: medReducer
 });
 

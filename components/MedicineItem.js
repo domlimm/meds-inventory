@@ -1,13 +1,26 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import { Text, Button, Layout, Card } from '@ui-kitten/components';
+import { StyleSheet, Dimensions, Image } from 'react-native';
+import { Text, Layout, Card } from '@ui-kitten/components';
 import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
 const MedicineItem = (props) => {
-  const { id, name, dosage, configured } = props;
+  const { id, name, dosage, configured, imageUrl } = props;
   const navigation = useNavigation();
+
+  const Header = () => (
+    <Layout style={styles.imageContainer}>
+      {imageUrl ? (
+        <Image style={styles.image} source={{ uri: imageUrl }} />
+      ) : (
+        <Image
+          style={styles.image}
+          source={require('../assets/images/medicine.jpg')}
+        />
+      )}
+    </Layout>
+  );
 
   return (
     <Card
@@ -16,6 +29,7 @@ const MedicineItem = (props) => {
       onPress={() =>
         navigation.navigate('MedicineDetail', { medId: id, medName: name })
       }
+      header={Header}
     >
       <Text category='h6' style={styles.medName}>
         {name}
@@ -36,12 +50,14 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   imageContainer: {
-    width: '100%',
-    height: 125,
+    alignSelf: 'center',
+    width: '90%',
+    height: 100,
     marginBottom: 10,
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 5
+    borderRadius: 5,
+    elevation: 5
   },
   image: {
     width: '100%',
