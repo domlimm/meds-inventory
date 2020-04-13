@@ -150,7 +150,7 @@ const AddMedicine = (props) => {
             <View style={{ flexDirection: 'row' }}>
               <View style={{ flex: 0.7, marginRight: 5, marginTop: 2 }}>
                 <Select
-                  label={<InputLabel title='Type' />}
+                  label={<InputLabel title='Form' />}
                   onSelect={(index) => setSelectedIndex(index)}
                   selectedIndex={selectedIndex}
                   caption='Per single consumption (Amount)'

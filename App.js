@@ -4,6 +4,8 @@ import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
+import { Asset } from 'expo-asset';
+import { Image } from 'react-native';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
@@ -32,17 +34,32 @@ const fetchFonts = () => {
   });
 };
 
+const fetchImages = (images) => {
+  return images.map((image) => {
+    if (typeof image === 'string') {
+      return Image.prefetch(image);
+    } else {
+      return Asset.fromModule(image).downloadAsync();
+    }
+  });
+};
+
 export default function App() {
-  const [fontLoaded, setFontLoaded] = useState(false);
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
 
   console.disableYellowBox = true;
 
-  if (!fontLoaded) {
+  const loadAssetsAsync = async () => {
+    await fetchImages([require('./assets/images/medicine.jpg')]);
+    await fetchFonts();
+  };
+
+  if (!assetsLoaded) {
     return (
       <AppLoading
-        startAsync={fetchFonts}
+        startAsync={loadAssetsAsync}
         onFinish={() => {
-          setFontLoaded(true);
+          setAssetsLoaded(true);
         }}
       />
     );

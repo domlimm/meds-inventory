@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 const { width, height } = Dimensions.get('window');
 
 const MedicineItem = (props) => {
-  const { id, name, dosage, configured, imageUrl } = props;
+  const { name, configured, imageUrl } = props;
   const navigation = useNavigation();
 
   const Header = () => (
@@ -26,9 +26,7 @@ const MedicineItem = (props) => {
     <Card
       status={configured ? 'success' : 'danger'}
       style={styles.medicineContainer}
-      onPress={() =>
-        navigation.navigate('MedicineDetail', { medId: id, medName: name })
-      }
+      onPress={() => navigation.navigate('MedicineDetail', { medData: props })}
       header={Header}
     >
       <Text category='h6' style={styles.medName}>
