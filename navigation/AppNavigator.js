@@ -83,20 +83,35 @@ const DrawerContent = ({ navigation, state }) => (
 );
 
 const Drawer = createDrawerNavigator();
+const MedicineSideStack = createStackNavigator();
+
+const MedicineSide = () => (
+  <MedicineSideStack.Navigator
+    initialRouteName='MedicineMain'
+    headerMode='none'
+  >
+    <MedicineSideStack.Screen
+      name='MedicineMain'
+      component={MedicationScreen}
+    />
+    <MedicineSideStack.Screen
+      name='MedicineAdd'
+      component={AddMedicineScreen}
+      options={{ unmountOnBlur: true }}
+    />
+    <MedicineSideStack.Screen
+      name='MedicineDetail'
+      component={MedicineDetailScreen}
+    />
+  </MedicineSideStack.Navigator>
+);
 
 const DrawerNavigator = () => (
   <Drawer.Navigator
     screenOptions={defaultNavOptions}
     drawerContent={(props) => <DrawerContent {...props} />}
-    initialRouteName='Medication'
   >
-    <Drawer.Screen name='Medication' component={MedicationScreen} />
-    <Drawer.Screen
-      name='AddMedicine'
-      component={AddMedicineScreen}
-      options={{ unmountOnBlur: true }}
-    />
-    <Drawer.Screen name='MedicineDetail' component={MedicineDetailScreen} />
+    <Drawer.Screen name='Medication' component={MedicineSide} />
     <Drawer.Screen name='Schedule' component={ScheduleScreen} />
     <Drawer.Screen name='History' component={HistoryScreen} />
   </Drawer.Navigator>

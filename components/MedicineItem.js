@@ -1,16 +1,22 @@
 import React from 'react';
-import { StyleSheet, Dimensions, Image } from 'react-native';
-import { Text, Layout, Card } from '@ui-kitten/components';
+import {
+  StyleSheet,
+  Dimensions,
+  Image,
+  View,
+  TouchableOpacity
+} from 'react-native';
+import { Text } from '@ui-kitten/components';
 import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
 const MedicineItem = (props) => {
-  const { name, configured, imageUrl } = props;
+  const { name, imageUrl, dosage } = props;
   const navigation = useNavigation();
 
   const Header = () => (
-    <Layout style={styles.imageContainer}>
+    <View>
       {imageUrl ? (
         <Image style={styles.image} source={{ uri: imageUrl }} />
       ) : (
@@ -19,57 +25,50 @@ const MedicineItem = (props) => {
           source={require('../assets/images/medicine.jpg')}
         />
       )}
-    </Layout>
+    </View>
   );
 
   return (
-    <Card
-      status={configured ? 'success' : 'danger'}
+    <TouchableOpacity
       style={styles.medicineContainer}
-      onPress={() => navigation.navigate('MedicineDetail', { medData: props })}
-      header={Header}
+      onPress={() =>
+        navigation.navigate('MedicineDetail', {
+          medData: props
+        })
+      }
+      activeOpacity={0.8}
     >
-      <Text category='h6' style={styles.medName}>
-        {name}
-      </Text>
-    </Card>
+      <Header />
+      <View style={styles.medicineBody}>
+        <Text category='h6'>{name}</Text>
+        <Text appearance='hint' category='c1'>
+          {dosage.type}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   medicineContainer: {
-    margin: 14,
-    width: width * 0.42,
-    height: height * 0.36,
-    borderRadius: 12,
-    elevation: 10
-  },
-  medName: {
-    marginTop: 2
-  },
-  imageContainer: {
-    alignSelf: 'center',
-    width: '90%',
-    height: 100,
-    marginBottom: 10,
-    borderColor: '#ccc',
-    borderWidth: 1,
+    backgroundColor: '#F6F7F9',
+    marginHorizontal: 18,
+    marginVertical: 16,
+    width: width * 0.38,
+    height: height * 0.32,
     borderRadius: 5,
-    elevation: 5
+    elevation: 7
+  },
+  medicineBody: {
+    paddingHorizontal: 10,
+    paddingVertical: 7
   },
   image: {
     width: '100%',
-    height: '100%'
+    height: (height * 0.32) / 2,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5
   }
-  // cardHeader: {
-  //   paddingHorizontal: 10,
-  //   paddingVertical: 10
-  // },
-  // cardFooter: {
-  //   marginVertical: -5,
-  //   marginHorizontal: -10,
-  //   alignItems: 'flex-end'
-  // },
 });
 
 export default MedicineItem;

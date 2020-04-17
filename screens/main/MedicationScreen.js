@@ -49,13 +49,16 @@ const MedicationScreen = (props) => {
   const addMedicineIcon = (props) => (
     <Icon {...props} name='file-add-outline' />
   );
+
   const searchIcon = (props) => <Icon {...props} name='search-outline' />;
+
+  const clearIcon = (props) => <Icon {...props} name='close-outline' />;
 
   const AddMedAction = () => (
     <TopNavigationAction
       icon={addMedicineIcon}
       onPress={() =>
-        props.navigation.navigate('AddMedicine', { screen: 'Add' })
+        props.navigation.navigate('Medication', { screen: 'MedicineAdd' })
       }
     />
   );
@@ -71,8 +74,10 @@ const MedicationScreen = (props) => {
         <Input
           value={search}
           accessoryLeft={searchIcon}
-          placeholder='Which medicine are you looking for?'
+          placeholder='Search for Medicine'
           style={styles.searchInput}
+          onChangeText={(val) => setSearch(val)}
+          accessoryRight={search.length > 0 && clearIcon}
         />
       </Layout>
       <Layout style={styles.mainContainer}>
