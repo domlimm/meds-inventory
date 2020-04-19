@@ -1,32 +1,17 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Dimensions,
-  Image,
-  View,
-  TouchableOpacity
-} from 'react-native';
-import { Text } from '@ui-kitten/components';
+import { StyleSheet, Dimensions, View, TouchableOpacity } from 'react-native';
+import { Text, Avatar } from '@ui-kitten/components';
 import { useNavigation } from '@react-navigation/native';
 
+import { pillImages, creamImages, syrupImages } from '../constants/drugType';
+
 const { width, height } = Dimensions.get('window');
+const collatedIcons = [...pillImages, ...creamImages, ...syrupImages];
 
-const MedicineItem = (props) => {
-  const { name, imageUrl, dosage } = props;
+const MedicineItem = props => {
+  const { name, dosage, iconId } = props;
   const navigation = useNavigation();
-
-  const Header = () => (
-    <View>
-      {imageUrl ? (
-        <Image style={styles.image} source={{ uri: imageUrl }} />
-      ) : (
-        <Image
-          style={styles.image}
-          source={require('../assets/images/medicine.jpg')}
-        />
-      )}
-    </View>
-  );
+  let iconUrl = collatedIcons.find(icon => icon.id === iconId).path;
 
   return (
     <TouchableOpacity
@@ -36,11 +21,11 @@ const MedicineItem = (props) => {
           medData: props
         })
       }
-      activeOpacity={0.8}
+      activeOpacity={0.9}
     >
-      <Header />
+      <Avatar source={iconUrl} size='large' />
       <View style={styles.medicineBody}>
-        <Text category='h6'>{name}</Text>
+        <Text category='s1'>{name}</Text>
         <Text appearance='hint' category='c1'>
           {dosage.type}
         </Text>
@@ -52,20 +37,24 @@ const MedicineItem = (props) => {
 const styles = StyleSheet.create({
   medicineContainer: {
     backgroundColor: '#F6F7F9',
-    marginHorizontal: 18,
-    marginVertical: 16,
-    width: width * 0.38,
-    height: height * 0.32,
+    marginHorizontal: 10,
+    marginVertical: 12,
+    width: width * 0.8,
+    height: height * 0.1,
     borderRadius: 5,
-    elevation: 7
+    elevation: 6,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingHorizontal: 10
   },
   medicineBody: {
-    paddingHorizontal: 10,
-    paddingVertical: 7
+    marginLeft: 10
   },
+  medicineFooter: {},
   image: {
     width: '100%',
-    height: (height * 0.32) / 2,
+    height: (height * 0.4) / 2,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5
   }

@@ -9,16 +9,15 @@ import { Image } from 'react-native';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
-import { default as baseTheme } from './utils/custom-theme.json';
 
-// init firebase
 import './firebase';
-
+import { default as baseTheme } from './utils/custom-theme.json';
 import { default as customMapping } from './utils/custom-mapping.json';
 import { AntDesignIconsPack } from './utils/ant-design-icons';
 import AppNavigator from './navigation/AppNavigator';
 import authReducer from './store/reducers/auth';
 import medReducer from './store/reducers/medicine';
+import { localImages } from './constants/drugType';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -34,8 +33,8 @@ const fetchFonts = () => {
   });
 };
 
-const fetchImages = (images) => {
-  return images.map((image) => {
+const fetchImages = images => {
+  return images.map(image => {
     if (typeof image === 'string') {
       return Image.prefetch(image);
     } else {
@@ -50,7 +49,7 @@ export default function App() {
   console.disableYellowBox = true;
 
   const loadAssetsAsync = async () => {
-    await fetchImages([require('./assets/images/medicine.jpg')]);
+    await fetchImages([...localImages]);
     await fetchFonts();
   };
 
@@ -68,11 +67,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <IconRegistry icons={[EvaIconsPack, AntDesignIconsPack]} />
-      <ApplicationProvider
-        {...eva}
-        customMapping={customMapping}
-        theme={{ ...eva.light, ...baseTheme }}
-      >
+      <ApplicationProvider {...eva} customMapping={customMapping} theme={{ ...eva.light, ...baseTheme }}>
         <AppNavigator />
       </ApplicationProvider>
     </Provider>

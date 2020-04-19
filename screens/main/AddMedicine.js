@@ -5,7 +5,9 @@ import {
   Dimensions,
   View,
   KeyboardAvoidingView,
-  Alert
+  Alert,
+  FlatList,
+  TouchableOpacity
 } from 'react-native';
 import {
   Button,
@@ -18,15 +20,19 @@ import {
   Calendar,
   Text,
   Layout,
-  TopNavigation
+  TopNavigation,
+  Avatar
 } from '@ui-kitten/components';
 import { useDispatch } from 'react-redux';
 
 import { drugTypes, drugMeasurements } from '../../constants/drugType';
 import AddMedicineImage from '../../components/AddMedicineImage';
 import * as medActions from '../../store/actions/medicine';
+import { pillImages, syrupImages, creamImages } from '../../constants/drugType';
 
-const AddMedicine = (props) => {
+const { width, height } = Dimensions.get('window');
+
+const AddMedicine = props => {
   const dispatch = useDispatch();
 
   const [medName, setMedName] = useState('');
@@ -35,6 +41,7 @@ const AddMedicine = (props) => {
   const [expiryDate, setExpiryDate] = useState(null);
   const [imagePath, setImagePath] = useState();
   const [remarks, setRemarks] = useState('');
+  const [selectedIcon, setSelectedIcon] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,21 +53,21 @@ const AddMedicine = (props) => {
     }
   }, [error]);
 
-  const medNameChangeHandler = (value) => {
+  const medNameChangeHandler = value => {
     setMedName(value);
   };
 
-  const imageChangeHandler = (imagePath) => {
+  const imageChangeHandler = imagePath => {
     setImagePath(imagePath);
   };
 
-  const renderSelectItem = (title) => <SelectItem key={title} title={title} />;
+  const renderSelectItem = title => <SelectItem key={title} title={title} />;
 
-  const amtHandler = (amt) => {
+  const amtHandler = amt => {
     setAmount(amt.toString());
   };
 
-  const remarksChangeHandler = (remarks) => {
+  const remarksChangeHandler = remarks => {
     setRemarks(remarks);
   };
 
@@ -70,9 +77,6 @@ const AddMedicine = (props) => {
       amount: amount.toString(),
       unit: drugMeasurements[drugType]
     };
-
-    if (!imagePath) {
-    }
 
     try {
       setIsLoading(true);
@@ -84,6 +88,7 @@ const AddMedicine = (props) => {
           expiryDate.toLocaleDateString('en-GB'),
           dosage,
           imagePath,
+          selectedIcon,
           remarks
         )
       );
@@ -110,17 +115,14 @@ const AddMedicine = (props) => {
     setImagePath(null);
     setRemarks('');
     setAmount('');
+    setSelectedIcon('');
     setIsLoading(false);
   };
 
   const CalendarIcon = () => <Icon name='calendar' />;
 
   const tDate = new Date();
-  const maxDate = new Date(
-    tDate.getFullYear() + 5,
-    tDate.getMonth(),
-    tDate.getDay()
-  );
+  const maxDate = new Date(tDate.getFullYear() + 10, tDate.getMonth(), tDate.getDay());
 
   const LoadingIndicator = () => (
     <View>
@@ -128,9 +130,42 @@ const AddMedicine = (props) => {
     </View>
   );
 
-  const InputLabel = (props) => (
-    <Text style={[styles.inputLabel, props.style]}>{props.title}</Text>
-  );
+  const InputLabel = props => <Text style={[styles.inputLabel, props.style]}>{props.title}</Text>;
+
+  const renderIconSelector = () => {
+    let iconType;
+
+    if (drugType === 'Capsules' || drugType === 'Tablets') {
+      iconType = pillImages;
+    } else if (drugType === 'Syrup') {
+      iconType = syrupImages;
+    } else if (drugType === 'Cream') {
+      iconType = creamImages;
+    }
+
+    return (
+      <View style={{ ...styles.inputContainer, ...styles.iconSelector }}>
+        <InputLabel style={{ marginBottom: 8 }} title='Display Icon' />
+        <FlatList data={iconType} horizontal={true} keyExtractor={icon => icon.id} renderItem={renderIconItem} />
+      </View>
+    );
+  };
+
+  const renderIconItem = ({ item }) => {
+    let idSelected = item.id;
+    return (
+      <TouchableOpacity
+        style={[styles.iconItem, idSelected === selectedIcon && styles.iconItemSelected]}
+        onPress={() => selectedIconItem(idSelected)}
+      >
+        <Avatar size='giant' source={item.path} />
+      </TouchableOpacity>
+    );
+  };
+
+  const selectedIconItem = id => {
+    setSelectedIcon(id);
+  };
 
   return (
     <Layout>
@@ -151,7 +186,7 @@ const AddMedicine = (props) => {
               <View style={{ flex: 0.7, marginRight: 5, marginTop: 2 }}>
                 <Select
                   label={<InputLabel title='Form' />}
-                  onSelect={(index) => setSelectedIndex(index)}
+                  onSelect={index => setSelectedIndex(index)}
                   selectedIndex={selectedIndex}
                   caption='Per single consumption (Amount)'
                   value={drugType}
@@ -169,6 +204,7 @@ const AddMedicine = (props) => {
                 />
               </View>
             </View>
+            {renderIconSelector()}
             <View style={styles.inputContainer}>
               <InputLabel style={{ marginBottom: 8 }} title='Expiry Date' />
               <Calendar
@@ -181,10 +217,7 @@ const AddMedicine = (props) => {
               />
             </View>
             <View style={styles.inputContainer}>
-              <AddMedicineImage
-                loading={isLoading}
-                setImage={imageChangeHandler}
-              />
+              <AddMedicineImage loading={isLoading} setImage={imageChangeHandler} />
             </View>
             <View style={styles.inputContainer}>
               <Input
@@ -225,11 +258,22 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   addSV: {
-    width: Dimensions.get('window').width * 0.9,
+    width: width * 0.9,
     paddingHorizontal: 8
   },
   inputContainer: {
     marginVertical: 10
+  },
+  iconSelector: {
+    height: 96
+  },
+  iconItem: {
+    marginHorizontal: 8
+  },
+  iconItemSelected: {
+    backgroundColor: '#366FC8',
+    padding: 4,
+    borderRadius: 5
   },
   btnContainer: {
     marginVertical: 12,

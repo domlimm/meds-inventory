@@ -4,20 +4,13 @@ import { Text, Layout } from '@ui-kitten/components';
 
 const { width, height } = Dimensions.get('window');
 
-const MedicineDetailScreen = (props) => {
+const MedicineDetailScreen = props => {
   const { medData } = props.route.params;
 
   return (
     <Layout style={styles.screen}>
       <Layout style={styles.imageContainer}>
-        {medData.imageUrl ? (
-          <Image style={styles.image} source={{ uri: medData.imageUrl }} />
-        ) : (
-          <Image
-            style={styles.image}
-            source={require('../../assets/images/medicine.jpg')}
-          />
-        )}
+        {medData.imageUrl && <Image style={styles.image} source={{ uri: medData.imageUrl }} />}
       </Layout>
       <Text>Medicine Details: test</Text>
     </Layout>
