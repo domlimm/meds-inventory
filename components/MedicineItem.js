@@ -27,7 +27,7 @@ const MedicineItem = props => {
       <View style={styles.medicineBody}>
         <Text category='s1'>{name}</Text>
         <Text appearance='hint' category='c1'>
-          {dosage.type}
+          {dosage.type}, {dosage.amount} {dosage.unit}
         </Text>
       </View>
     </TouchableOpacity>
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 12,
     width: width * 0.8,
-    height: height * 0.1,
+    height: height * 0.11,
     borderRadius: 5,
     elevation: 6,
     flexDirection: 'row',
@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
   medicineBody: {
     marginLeft: 10
   },
-  medicineFooter: {},
   image: {
     width: '100%',
     height: (height * 0.4) / 2,

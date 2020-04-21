@@ -17,7 +17,7 @@ import {
   Spinner,
   SelectItem,
   IndexPath,
-  Calendar,
+  Datepicker,
   Text,
   Layout,
   TopNavigation,
@@ -146,7 +146,12 @@ const AddMedicine = props => {
     return (
       <View style={{ ...styles.inputContainer, ...styles.iconSelector }}>
         <InputLabel style={{ marginBottom: 8 }} title='Display Icon' />
-        <FlatList data={iconType} horizontal={true} keyExtractor={icon => icon.id} renderItem={renderIconItem} />
+        <FlatList
+          data={iconType}
+          horizontal={true}
+          keyExtractor={icon => icon.id}
+          renderItem={renderIconItem}
+        />
       </View>
     );
   };
@@ -207,7 +212,7 @@ const AddMedicine = props => {
             {renderIconSelector()}
             <View style={styles.inputContainer}>
               <InputLabel style={{ marginBottom: 8 }} title='Expiry Date' />
-              <Calendar
+              <Datepicker
                 date={expiryDate}
                 onSelect={setExpiryDate}
                 icon={CalendarIcon}
