@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
-import { ScrollView, Image, StyleSheet, Dimensions, SafeAreaView } from 'react-native';
+import {
+  ScrollView,
+  Image,
+  StyleSheet,
+  Dimensions,
+  SafeAreaView,
+  StatusBar,
+  View
+} from 'react-native';
 import {
   Text,
   Layout,
   TopNavigation,
   Icon,
-  MenuItem,
+  TopNavigationAction,
+  Avatar,
   OverflowMenu,
-  TopNavigationAction
+  MenuItem
 } from '@ui-kitten/components';
 
 const { width, height } = Dimensions.get('window');
+const DEVICE_HEIGHT = Dimensions.get('screen').height;
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 const MedicineDetailScreen = props => {
-  const { medData } = props.route.params;
-
+  const { medData, iconUrl } = props.route.params;
+  console.log('medData', medData);
   const [showMenu, setShowMenu] = useState(false);
 
   const EditIcon = props => <Icon {...props} name='edit-outline' />;
@@ -23,7 +34,7 @@ const MedicineDetailScreen = props => {
 
   const BackIcon = props => <Icon {...props} name='arrow-back-outline' />;
 
-  const MenuIcon = props => <Icon {...props} name='menu-outline' />;
+  const MenuIcon = props => <Icon {...props} name='more-vertical-outline' />;
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -33,8 +44,8 @@ const MedicineDetailScreen = props => {
 
   const renderRightActions = () => (
     <OverflowMenu anchor={renderMenuAction} visible={showMenu} onBackdropPress={toggleMenu}>
-      <MenuItem accessoryLeft={EditIcon} title='Edit' />
-      <MenuItem accessoryLeft={DeleteIcon} title='Delete' />
+      <MenuItem accessoryLeft={EditIcon} title='EDIT' />
+      <MenuItem accessoryLeft={DeleteIcon} title='DELETE' />
     </OverflowMenu>
   );
 
@@ -45,6 +56,17 @@ const MedicineDetailScreen = props => {
     />
   );
 
+  const DetailContainer = props => (
+    <View style={styles.detailContainer}>
+      <Text appearance='hint' category='label' style={styles.title}>
+        {props.title}
+      </Text>
+      <Text category='h6' style={{ ...styles.value, ...props.extraTitleStyle }}>
+        {props.value}
+      </Text>
+    </View>
+  );
+
   return (
     <SafeAreaView>
       <TopNavigation
@@ -53,37 +75,80 @@ const MedicineDetailScreen = props => {
         accessoryLeft={renderBackAction}
         accessoryRight={renderRightActions}
       />
-      <ScrollView contentContainerStyle={styles.body}>
-        <Layout style={styles.screen}>
-          <Layout style={styles.imageContainer}>
-            {medData.imageUrl && <Image style={styles.image} source={{ uri: medData.imageUrl }} />}
-          </Layout>
-          <Text>Medicine Details: test</Text>
+      <Layout style={styles.body}>
+        <Layout style={styles.imageContainer}>
+          {medData.imageUrl ? (
+            <Image style={styles.image} source={{ uri: medData.imageUrl }} />
+          ) : (
+            <Text>No image taken!</Text>
+          )}
         </Layout>
-      </ScrollView>
+        <Layout style={styles.contentContainer}>
+          <Avatar source={iconUrl} size='giant' style={styles.avatar} />
+          <View style={{ flex: 1 }}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 0.5 }}>
+                <DetailContainer title='Name' value={medData.name} />
+                <DetailContainer
+                  title='Dosage'
+                  value={`${medData.dosage.amount}${medData.dosage.unit}`}
+                />
+              </View>
+              <View style={{ flex: 0.5 }}>
+                <DetailContainer title='Expiry' value={medData.expiry} />
+                <DetailContainer title='Form' value={medData.dosage.type} />
+              </View>
+            </View>
+            <DetailContainer
+              extraTitleStyle={styles.remarksContainer}
+              title='Remarks'
+              value={medData.remarks}
+            />
+          </View>
+        </Layout>
+      </Layout>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1
-  },
   body: {
-    height: height * 0.9
+    height: DEVICE_HEIGHT - 56 - STATUSBAR_HEIGHT
   },
   imageContainer: {
-    alignSelf: 'center',
-    width: width * 0.9,
-    height: 225,
-    borderRadius: 5
+    flex: 0.4,
+    width: width,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   image: {
-    width: '100%',
-    height: '100%'
+    width: '90%',
+    height: '90%',
+    borderRadius: 3
   },
-  backdrop: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+  contentContainer: {
+    backgroundColor: '#D7EBFC',
+    flex: 0.6,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    paddingHorizontal: 20,
+    elevation: 10
+  },
+  avatar: {
+    alignSelf: 'center',
+    top: -25
+  },
+  detailContainer: {
+    marginBottom: 20
+  },
+  title: {
+    marginBottom: 5
+  },
+  value: {
+    fontSize: 18
+  },
+  remarksContainer: {
+    fontSize: 15
   }
 });
 

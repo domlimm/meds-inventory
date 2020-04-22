@@ -18,15 +18,16 @@ const MedicineItem = props => {
       style={styles.medicineContainer}
       onPress={() =>
         navigation.navigate('MedicineDetail', {
-          medData: props
+          medData: props,
+          iconUrl: iconUrl
         })
       }
       activeOpacity={0.9}
     >
       <Avatar source={iconUrl} size='large' />
       <View style={styles.medicineBody}>
-        <Text category='s1'>{name}</Text>
-        <Text appearance='hint' category='c1'>
+        <Text category='h6'>{name}</Text>
+        <Text appearance='hint' category='s1'>
           {dosage.type}, {dosage.amount} {dosage.unit}
         </Text>
       </View>
