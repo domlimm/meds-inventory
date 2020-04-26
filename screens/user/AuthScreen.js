@@ -15,7 +15,7 @@ import * as authActions from '../../store/actions/auth';
 
 const { height } = Dimensions.get('window');
 
-const AuthScreen = (props) => {
+const AuthScreen = props => {
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
@@ -55,11 +55,11 @@ const AuthScreen = (props) => {
     setSecureTextEntry(!secureTextEntry);
   };
 
-  const renderEmailIcon = (props) => <Icon {...props} name='email-outline' />;
+  const renderEmailIcon = props => <Icon {...props} name='email-outline' />;
 
-  const renderPersonIcon = (props) => <Icon {...props} name='person-outline' />;
+  const renderPersonIcon = props => <Icon {...props} name='person-outline' />;
 
-  const renderPWIcon = (props) => (
+  const renderPWIcon = props => (
     <TouchableWithoutFeedback onPress={reviewPassword}>
       <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
     </TouchableWithoutFeedback>
@@ -80,7 +80,7 @@ const AuthScreen = (props) => {
       autoCapitalize='words'
       value={name}
       accessoryRight={renderPersonIcon}
-      onChangeText={(text) => setName(text)}
+      onChangeText={text => setName(text)}
       labelStyle={styles.inputLabel}
     />
   );
@@ -90,13 +90,11 @@ const AuthScreen = (props) => {
       <ScrollView>
         <View style={styles.authContainer}>
           <View style={styles.greetingContainer}>
-            <Text category='h6' status='primary'>
+            <Text category='h6' style={{ fontWeight: 'bold' }} status='primary'>
               {isLogin ? 'LOGIN' : 'SIGN UP'}
             </Text>
             <Text category='s2'>
-              {isLogin
-                ? 'Welcome back!'
-                : 'Start tracking your medicine schedule!'}
+              {isLogin ? 'Welcome back!' : 'Start tracking your medicine schedule!'}
             </Text>
           </View>
           {!isLogin && nameInput}
@@ -106,7 +104,7 @@ const AuthScreen = (props) => {
             style={styles.textInput}
             keyboardType='email-address'
             autoCompleteType='off'
-            onChangeText={(text) => setEmail(text)}
+            onChangeText={text => setEmail(text)}
             value={email}
             autoCapitalize='none'
             accessoryRight={renderEmailIcon}
@@ -117,7 +115,7 @@ const AuthScreen = (props) => {
             placeholder='Enter your Password'
             style={styles.textInput}
             autoCompleteType='off'
-            onChangeText={(text) => setPassword(text)}
+            onChangeText={text => setPassword(text)}
             value={password}
             autoCapitalize='none'
             secureTextEntry={secureTextEntry}
@@ -140,7 +138,7 @@ const AuthScreen = (props) => {
               <Button
                 size='small'
                 onPress={() => {
-                  setIsLogin((prevState) => !prevState);
+                  setIsLogin(prevState => !prevState);
                   setEmail('');
                   setPassword('');
                   setName('');

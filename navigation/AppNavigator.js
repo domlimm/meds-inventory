@@ -3,7 +3,15 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Drawer as UIKittenDrawer, DrawerItem, Icon, Button, Text, Layout, Divider } from '@ui-kitten/components';
+import {
+  Drawer as UIKittenDrawer,
+  DrawerItem,
+  Icon,
+  Button,
+  Text,
+  Layout,
+  Divider
+} from '@ui-kitten/components';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import firebase from '../firebase';
@@ -41,10 +49,9 @@ const defaultNavOptions = {
 const Header = () => {
   const name = useSelector(state => state.auth.name);
   return (
-    <Layout level='3' style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
+    <Layout style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
       <Text category='s1' style={{ marginBottom: 4 }}>{`Hello, ${name}!`}</Text>
       <Text category='c1'>What would you like to do today?</Text>
-      <Divider />
     </Layout>
   );
 };
@@ -81,13 +88,20 @@ const MedicineSideStack = createStackNavigator();
 const MedicineSide = () => (
   <MedicineSideStack.Navigator initialRouteName='MedicineMain' headerMode='none'>
     <MedicineSideStack.Screen name='MedicineMain' component={MedicationScreen} />
-    <MedicineSideStack.Screen name='MedicineAdd' component={AddMedicineScreen} options={{ unmountOnBlur: true }} />
+    <MedicineSideStack.Screen
+      name='MedicineAdd'
+      component={AddMedicineScreen}
+      options={{ unmountOnBlur: true }}
+    />
     <MedicineSideStack.Screen name='MedicineDetail' component={MedicineDetailScreen} />
   </MedicineSideStack.Navigator>
 );
 
 const DrawerNavigator = () => (
-  <Drawer.Navigator screenOptions={defaultNavOptions} drawerContent={props => <DrawerContent {...props} />}>
+  <Drawer.Navigator
+    screenOptions={defaultNavOptions}
+    drawerContent={props => <DrawerContent {...props} />}
+  >
     <Drawer.Screen name='Medication' component={MedicineSide} />
     <Drawer.Screen name='Schedule' component={ScheduleScreen} />
     <Drawer.Screen name='History' component={HistoryScreen} />
@@ -130,7 +144,13 @@ export default AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      {isAuth && !isLoading ? <DrawerNavigator /> : !isAuth & !isLoading ? <AuthNavigator /> : <StartupScreen />}
+      {isAuth && !isLoading ? (
+        <DrawerNavigator />
+      ) : !isAuth & !isLoading ? (
+        <AuthNavigator />
+      ) : (
+        <StartupScreen />
+      )}
     </NavigationContainer>
   );
 };

@@ -25,7 +25,7 @@ export const retrieveMedication = () => {
               resData[key].dosage,
               resData[key].imageUrl,
               resData[key].iconId,
-              resData[key].additionalRemarks,
+              resData[key].instructions,
               resData[key].configured
             )
           );
@@ -80,7 +80,7 @@ export const addMedicine = (name, expiry, dosage, imageUrl, iconId, addRemarks) 
               iconId: iconId,
               expiry: expiry,
               dosage: dosage,
-              additionalRemarks: addRemarks,
+              instructions: addRemarks,
               configured: false
             };
             const updates = {};
@@ -115,7 +115,7 @@ export const addMedicine = (name, expiry, dosage, imageUrl, iconId, addRemarks) 
       iconId: iconId,
       expiry: expiry,
       dosage: dosage,
-      additionalRemarks: addRemarks,
+      instructions: addRemarks,
       configured: false
     };
 

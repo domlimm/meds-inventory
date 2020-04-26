@@ -226,12 +226,12 @@ const AddMedicine = props => {
             </View>
             <View style={styles.inputContainer}>
               <Input
-                label={<InputLabel title='Additional Remarks' />}
+                label={<InputLabel title='Instructions' />}
                 value={remarks}
                 onChangeText={remarksChangeHandler}
                 style={styles.input}
                 multiline
-                numberOfLines={5}
+                numberOfLines={3}
               />
             </View>
             <View style={styles.btnContainer}>

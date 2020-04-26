@@ -25,7 +25,6 @@ const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 const MedicineDetailScreen = props => {
   const { medData, iconUrl } = props.route.params;
-  console.log('medData', medData);
   const [showMenu, setShowMenu] = useState(false);
 
   const EditIcon = props => <Icon {...props} name='edit-outline' />;
@@ -85,7 +84,7 @@ const MedicineDetailScreen = props => {
         </Layout>
         <Layout style={styles.contentContainer}>
           <Avatar source={iconUrl} size='giant' style={styles.avatar} />
-          <View style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row' }}>
               <View style={{ flex: 0.5 }}>
                 <DetailContainer title='Name' value={medData.name} />
@@ -101,10 +100,25 @@ const MedicineDetailScreen = props => {
             </View>
             <DetailContainer
               extraTitleStyle={styles.remarksContainer}
-              title='Remarks'
+              title='Instructions'
               value={medData.remarks}
             />
-          </View>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test last</Text>
+          </ScrollView>
         </Layout>
       </Layout>
     </SafeAreaView>
@@ -113,10 +127,12 @@ const MedicineDetailScreen = props => {
 
 const styles = StyleSheet.create({
   body: {
-    height: DEVICE_HEIGHT - 56 - STATUSBAR_HEIGHT
+    height: DEVICE_HEIGHT - 56 - STATUSBAR_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   imageContainer: {
-    flex: 0.4,
+    flex: 0.35,
     width: width,
     justifyContent: 'center',
     alignItems: 'center'
@@ -127,12 +143,15 @@ const styles = StyleSheet.create({
     borderRadius: 3
   },
   contentContainer: {
-    backgroundColor: '#D7EBFC',
-    flex: 0.6,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+    width: '90%',
+    backgroundColor: '#CFFFE5',
+    flex: 0.65,
+    borderRadius: 25,
+    // borderTopLeftRadius: 25,
+    // borderTopRightRadius: 25,
     paddingHorizontal: 20,
-    elevation: 10
+    elevation: 10,
+    marginBottom: 50
   },
   avatar: {
     alignSelf: 'center',

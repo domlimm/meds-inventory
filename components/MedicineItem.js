@@ -27,7 +27,7 @@ const MedicineItem = props => {
       <Avatar source={iconUrl} size='large' />
       <View style={styles.medicineBody}>
         <Text category='h6'>{name}</Text>
-        <Text appearance='hint' category='s1'>
+        <Text category='s2'>
           {dosage.type}, {dosage.amount} {dosage.unit}
         </Text>
       </View>
@@ -37,10 +37,10 @@ const MedicineItem = props => {
 
 const styles = StyleSheet.create({
   medicineContainer: {
-    backgroundColor: '#F6F7F9',
+    backgroundColor: '#CFFFE5',
     marginHorizontal: 10,
     marginVertical: 12,
-    width: width * 0.8,
+    width: width * 0.9,
     height: height * 0.11,
     borderRadius: 5,
     elevation: 6,
