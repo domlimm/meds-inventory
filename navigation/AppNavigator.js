@@ -3,15 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  Drawer as UIKittenDrawer,
-  DrawerItem,
-  Icon,
-  Button,
-  Text,
-  Layout,
-  Divider
-} from '@ui-kitten/components';
+import { Drawer, DrawerItem, Icon, Button, Text, Layout, IndexPath } from '@ui-kitten/components';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import firebase from '../firebase';
@@ -56,33 +48,36 @@ const Header = () => {
   );
 };
 
-const DrawerContent = ({ navigation, state }) => (
-  <SafeAreaView style={styles.customDrawer}>
-    <UIKittenDrawer
-      onSelect={index => navigation.navigate(state.routeNames[index.row])}
-      selectedIndex={state.index}
-      header={() => <Header />}
-    >
-      <DrawerItem title='MEDICATION' accessoryLeft={InfoIcon} />
-      <DrawerItem title='SCHEDULE' accessoryLeft={ScheduleIcon} />
-      <DrawerItem title='HISTORY' accessoryLeft={HistoryIcon} />
-    </UIKittenDrawer>
-    <View style={styles.btnView}>
-      <Button
-        accessoryLeft={LogoutIcon}
-        style={styles.logoutBtn}
-        onPress={() => {
-          navigation.closeDrawer();
-          logout();
-        }}
+const DrawerContent = ({ navigation, state }) => {
+  const selectedIndex = new IndexPath(state.index);
+  return (
+    <SafeAreaView style={styles.customDrawer}>
+      <Drawer
+        onSelect={index => navigation.navigate(state.routeNames[index.row])}
+        selectedIndex={selectedIndex}
+        header={() => <Header />}
       >
-        LOGOUT
-      </Button>
-    </View>
-  </SafeAreaView>
-);
+        <DrawerItem title='MEDICATION' accessoryLeft={InfoIcon} />
+        <DrawerItem title='SCHEDULE' accessoryLeft={ScheduleIcon} />
+        <DrawerItem title='HISTORY' accessoryLeft={HistoryIcon} />
+      </Drawer>
+      <View style={styles.btnView}>
+        <Button
+          accessoryLeft={LogoutIcon}
+          style={styles.logoutBtn}
+          onPress={() => {
+            navigation.closeDrawer();
+            logout();
+          }}
+        >
+          LOGOUT
+        </Button>
+      </View>
+    </SafeAreaView>
+  );
+};
 
-const Drawer = createDrawerNavigator();
+const DrawerNav = createDrawerNavigator();
 const MedicineSideStack = createStackNavigator();
 
 const MedicineSide = () => (
@@ -98,14 +93,14 @@ const MedicineSide = () => (
 );
 
 const DrawerNavigator = () => (
-  <Drawer.Navigator
+  <DrawerNav.Navigator
     screenOptions={defaultNavOptions}
     drawerContent={props => <DrawerContent {...props} />}
   >
-    <Drawer.Screen name='Medication' component={MedicineSide} />
-    <Drawer.Screen name='Schedule' component={ScheduleScreen} />
-    <Drawer.Screen name='History' component={HistoryScreen} />
-  </Drawer.Navigator>
+    <DrawerNav.Screen name='Medication' component={MedicineSide} />
+    <DrawerNav.Screen name='Schedule' component={ScheduleScreen} />
+    <DrawerNav.Screen name='History' component={HistoryScreen} />
+  </DrawerNav.Navigator>
 );
 
 const AuthStackNavigator = createStackNavigator();
