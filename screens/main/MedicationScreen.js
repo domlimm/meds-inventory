@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet, SafeAreaView, Dimensions, FlatList, View } from 'react-native';
-import { Icon, Layout, TopNavigation, TopNavigationAction, Spinner, Text, Input } from '@ui-kitten/components';
+import {
+  Icon,
+  Layout,
+  TopNavigation,
+  TopNavigationAction,
+  Spinner,
+  Text,
+  Input
+} from '@ui-kitten/components';
 
 import MedicineItem from '../../components/MedicineItem';
 import * as medicineActions from '../../store/actions/medicine';
@@ -96,8 +104,6 @@ const MedicationScreen = props => {
 const styles = StyleSheet.create({
   AndroidSafeArea: {
     flex: 1
-    // backgroundColor: 'white',
-    // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
   },
   mainContainer: {
     flex: 1,

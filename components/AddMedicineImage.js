@@ -4,7 +4,7 @@ import { Icon, Button, Text } from '@ui-kitten/components';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 
-const AddMedicineImage = (props) => {
+const AddMedicineImage = props => {
   const [medImg, setMedImg] = useState(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const AddMedicineImage = (props) => {
 
   const verifyPermissions = () => {
     Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL)
-      .then((result) => {
+      .then(result => {
         if (result.status !== 'granted') {
           Alert.alert(
             'Insufficient permissions!',
@@ -25,7 +25,7 @@ const AddMedicineImage = (props) => {
           return false;
         }
       })
-      .catch((err) => console.log(err));
+      .catch(err => console.log(err));
     return true;
   };
 
@@ -38,7 +38,7 @@ const AddMedicineImage = (props) => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.5 // 1 highest
-    }).then((image) => {
+    }).then(image => {
       setMedImg(image.uri);
       props.setImage(image.uri);
     });
@@ -54,15 +54,15 @@ const AddMedicineImage = (props) => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.5 // 1 highest
-    }).then((image) => {
+    }).then(image => {
       setMedImg(image.uri);
       props.setImage(image.uri);
     });
   };
 
-  const CameraIcon = () => <Icon name='camera-outline' />;
+  const GalleryIcon = props => <Icon {...props} name='image-outline' />;
 
-  const GalleryIcon = () => <Icon name='image-outline' />;
+  const CameraIcon = props => <Icon {...props} name='camera-outline' />;
 
   return (
     <View style={styles.imagePicker}>
@@ -75,12 +75,12 @@ const AddMedicineImage = (props) => {
       </View>
       <View style={styles.btnContainer}>
         <View style={styles.btnHolder}>
-          <Button onPress={takeImageHandler} icon={CameraIcon}>
+          <Button onPress={takeImageHandler} accessoryLeft={CameraIcon}>
             CAMERA
           </Button>
         </View>
         <View style={styles.btnHolder}>
-          <Button onPress={selectImageHandler} icon={GalleryIcon}>
+          <Button onPress={selectImageHandler} accessoryLeft={GalleryIcon}>
             GALLERY
           </Button>
         </View>

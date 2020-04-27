@@ -8,10 +8,11 @@ import {
   ScrollView,
   TouchableWithoutFeedback
 } from 'react-native';
-import { Button, Input, Icon, Text, Spinner } from '@ui-kitten/components';
+import { Button, Input, Icon, Text } from '@ui-kitten/components';
 import { useDispatch } from 'react-redux';
 
 import * as authActions from '../../store/actions/auth';
+import LoadingIndicator from '../../components/LoadingIndicator';
 
 const { height } = Dimensions.get('window');
 
@@ -65,12 +66,6 @@ const AuthScreen = props => {
     </TouchableWithoutFeedback>
   );
 
-  const LoadingIndicator = () => (
-    <View>
-      <Spinner size='small' />
-    </View>
-  );
-
   const nameInput = (
     <Input
       label='Name'
@@ -90,10 +85,10 @@ const AuthScreen = props => {
       <ScrollView>
         <View style={styles.authContainer}>
           <View style={styles.greetingContainer}>
-            <Text category='h6' style={{ fontWeight: 'bold' }} status='primary'>
+            <Text category='h6' style={{ fontWeight: 'bold', fontSize: 34 }} status='primary'>
               {isLogin ? 'LOGIN' : 'SIGN UP'}
             </Text>
-            <Text category='s2'>
+            <Text category='s2' style={{ fontSize: 16 }}>
               {isLogin ? 'Welcome back!' : 'Start tracking your medicine schedule!'}
             </Text>
           </View>

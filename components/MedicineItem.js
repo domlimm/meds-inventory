@@ -11,6 +11,7 @@ const collatedIcons = [...pillImages, ...creamImages, ...syrupImages];
 const MedicineItem = props => {
   const { name, dosage, iconId } = props;
   const navigation = useNavigation();
+
   let iconUrl = collatedIcons.find(icon => icon.id === iconId).path;
 
   return (
@@ -26,7 +27,9 @@ const MedicineItem = props => {
     >
       <Avatar source={iconUrl} size='large' />
       <View style={styles.medicineBody}>
-        <Text category='h6'>{name}</Text>
+        <Text category='h6' style={{ fontWeight: 'bold' }}>
+          {name}
+        </Text>
         <Text category='s2'>
           {dosage.type}, {dosage.amount} {dosage.unit}
         </Text>
@@ -37,9 +40,8 @@ const MedicineItem = props => {
 
 const styles = StyleSheet.create({
   medicineContainer: {
-    backgroundColor: '#CFFFE5',
-    marginHorizontal: 10,
-    marginVertical: 12,
+    backgroundColor: '#7FCFAD',
+    marginVertical: 10,
     width: width * 0.9,
     height: height * 0.11,
     borderRadius: 5,

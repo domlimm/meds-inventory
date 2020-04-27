@@ -2,7 +2,6 @@
   "expo": {
     "androidStatusBar": {
       "barStyle": "dark-content",
-      "backgroundColor": "#FFFFFF",
       "translucent": false
     },
     "name": "my-medicine-tracker",

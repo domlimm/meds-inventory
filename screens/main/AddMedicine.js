@@ -14,7 +14,6 @@ import {
   Input,
   Select,
   Icon,
-  Spinner,
   SelectItem,
   IndexPath,
   Datepicker,
@@ -27,6 +26,7 @@ import { useDispatch } from 'react-redux';
 
 import { drugTypes, drugMeasurements } from '../../constants/drugType';
 import AddMedicineImage from '../../components/AddMedicineImage';
+import LoadingIndicator from '../../components/LoadingIndicator';
 import * as medActions from '../../store/actions/medicine';
 import { pillImages, syrupImages, creamImages } from '../../constants/drugType';
 
@@ -119,16 +119,14 @@ const AddMedicine = props => {
     setIsLoading(false);
   };
 
-  const CalendarIcon = () => <Icon name='calendar' />;
+  const SaveIcon = props => <Icon {...props} name='save-outline' />;
+
+  const CloseIcon = props => <Icon {...props} name='close-outline' />;
+
+  const CalendarIcon = props => <Icon {...props} name='calendar-outline' />;
 
   const tDate = new Date();
   const maxDate = new Date(tDate.getFullYear() + 10, tDate.getMonth(), tDate.getDay());
-
-  const LoadingIndicator = () => (
-    <View>
-      <Spinner size='small' />
-    </View>
-  );
 
   const InputLabel = props => <Text style={[styles.inputLabel, props.style]}>{props.title}</Text>;
 
@@ -215,7 +213,7 @@ const AddMedicine = props => {
               <Datepicker
                 date={expiryDate}
                 onSelect={setExpiryDate}
-                icon={CalendarIcon}
+                accessoryRight={CalendarIcon}
                 backdropStyle={styles.backdrop}
                 min={new Date()}
                 max={maxDate}
@@ -239,13 +237,13 @@ const AddMedicine = props => {
                 <Button
                   status='success'
                   onPress={addMedicineHandler}
-                  accessoryLeft={isLoading ? () => <LoadingIndicator /> : null}
+                  accessoryLeft={isLoading ? () => <LoadingIndicator /> : SaveIcon}
                 >
                   {isLoading ? 'LOADING' : 'SAVE'}
                 </Button>
               </View>
               <View style={styles.btn}>
-                <Button status='danger' onPress={closeHandler}>
+                <Button status='danger' accessoryLeft={CloseIcon} onPress={closeHandler}>
                   CLOSE
                 </Button>
               </View>
@@ -292,6 +290,9 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
     color: '#070D0D'
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   }
 });
 

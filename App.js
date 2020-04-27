@@ -28,8 +28,7 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const fetchFonts = () => {
   return Font.loadAsync({
-    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
-    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
+    montserrat: require('./assets/fonts/Montserrat-Regular.ttf')
   });
 };
 
@@ -67,7 +66,11 @@ export default function App() {
   return (
     <Provider store={store}>
       <IconRegistry icons={[EvaIconsPack, AntDesignIconsPack]} />
-      <ApplicationProvider {...eva} customMapping={customMapping} theme={{ ...eva.light, ...baseTheme }}>
+      <ApplicationProvider
+        {...eva}
+        customMapping={customMapping}
+        theme={{ ...eva.light, ...baseTheme }}
+      >
         <AppNavigator />
       </ApplicationProvider>
     </Provider>
