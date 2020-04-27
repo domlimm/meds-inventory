@@ -39,7 +39,7 @@ export const retrieveMedication = () => {
   };
 };
 
-export const addMedicine = (name, expiry, dosage, imageUrl, iconId, addRemarks) => {
+export const addMedicine = (name, expiry, dosage, imageUrl, iconId, instructions) => {
   return async dispatch => {
     //Passing null to update() will remove the data at this location.
 
@@ -80,7 +80,7 @@ export const addMedicine = (name, expiry, dosage, imageUrl, iconId, addRemarks) 
               iconId: iconId,
               expiry: expiry,
               dosage: dosage,
-              instructions: addRemarks,
+              instructions: instructions,
               configured: false
             };
             const updates = {};
@@ -115,7 +115,7 @@ export const addMedicine = (name, expiry, dosage, imageUrl, iconId, addRemarks) 
       iconId: iconId,
       expiry: expiry,
       dosage: dosage,
-      instructions: addRemarks,
+      instructions: instructions,
       configured: false
     };
 

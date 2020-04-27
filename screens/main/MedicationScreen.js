@@ -41,7 +41,7 @@ const MedicationScreen = props => {
     setSearch('');
   };
 
-  const addMedicineIcon = props => <Icon {...props} name='file-add-outline' />;
+  const addMedicineIcon = props => <Icon {...props} name='plus-outline' />;
 
   const searchIcon = props => <Icon {...props} name='search-outline' />;
 
@@ -89,7 +89,7 @@ const MedicationScreen = props => {
                   imageUrl={medData.item.imageUrl}
                   iconId={medData.item.iconId}
                   dosage={medData.item.dosage}
-                  remarks={medData.item.additionalRemarks}
+                  instructions={medData.item.instructions}
                   configured={medData.item.configured}
                 />
               );

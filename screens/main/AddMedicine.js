@@ -40,7 +40,7 @@ const AddMedicine = props => {
   const [amount, setAmount] = useState('');
   const [expiryDate, setExpiryDate] = useState(null);
   const [imagePath, setImagePath] = useState();
-  const [remarks, setRemarks] = useState('');
+  const [instructions, setInstructions] = useState('');
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,8 +67,8 @@ const AddMedicine = props => {
     setAmount(amt.toString());
   };
 
-  const remarksChangeHandler = remarks => {
-    setRemarks(remarks);
+  const instructionsChangeHandler = text => {
+    setInstructions(text);
   };
 
   const addMedicineHandler = async () => {
@@ -113,7 +113,7 @@ const AddMedicine = props => {
     setMedName('');
     setExpiryDate(null);
     setImagePath(null);
-    setRemarks('');
+    setInstructions('');
     setAmount('');
     setSelectedIcon('');
     setIsLoading(false);
@@ -225,8 +225,8 @@ const AddMedicine = props => {
             <View style={styles.inputContainer}>
               <Input
                 label={<InputLabel title='Instructions' />}
-                value={remarks}
-                onChangeText={remarksChangeHandler}
+                value={instructions}
+                onChangeText={instructionsChangeHandler}
                 style={styles.input}
                 multiline
                 numberOfLines={3}
