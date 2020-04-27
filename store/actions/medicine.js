@@ -21,6 +21,11 @@ export const retrieveMedication = () => {
             new Medicine(
               key,
               resData[key].name,
+              null,
+              null,
+              null,
+              null,
+              null,
               resData[key].expiry,
               resData[key].dosage,
               resData[key].imageUrl,

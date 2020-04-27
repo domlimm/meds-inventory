@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { ScrollView, Image, StyleSheet, Dimensions, SafeAreaView, View } from 'react-native';
+import {
+  ScrollView,
+  Image,
+  StyleSheet,
+  Dimensions,
+  SafeAreaView,
+  View,
+  StatusBar
+} from 'react-native';
 import {
   Text,
   Layout,
@@ -11,12 +19,14 @@ import {
   Avatar
 } from '@ui-kitten/components';
 import * as Progress from 'react-native-progress';
+import { useIsFocused } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 // const DEVICE_HEIGHT = Dimensions.get('screen').height;
 // const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 const MedicineDetailScreen = props => {
+  const isFocused = useIsFocused();
   const { medData, iconUrl } = props.route.params;
   const [showMenu, setShowMenu] = useState(false);
 
@@ -69,6 +79,7 @@ const MedicineDetailScreen = props => {
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
+      {isFocused && <StatusBar barStyle='dark-content' backgroundColor='#74ADA2' />}
       <TopNavigation
         style={{ backgroundColor: '#74ADA2' }}
         accessoryLeft={renderBackAction}
@@ -97,7 +108,7 @@ const MedicineDetailScreen = props => {
               </View>
             </View>
             <View style={styles.medicineIcon}>
-              <Avatar source={iconUrl} size='giant' style={{ marginTop: 2 }} />
+              <Avatar source={iconUrl} size='giant' />
             </View>
           </View>
           <View style={styles.contentQuantity}>
@@ -111,7 +122,28 @@ const MedicineDetailScreen = props => {
               style={{ marginVertical: 8 }}
             />
           </View>
-          <View></View>
+          <View>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>test</Text>
+            <Text>last test</Text>
+          </View>
           {/* <View style={{ flexDirection: 'row' }}>
             <View style={{ flex: 0.5 }}>
               <DetailContainer title='Name' value={medData.name} />

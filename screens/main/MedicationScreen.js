@@ -41,7 +41,7 @@ const MedicationScreen = props => {
     setSearch('');
   };
 
-  const addMedicineIcon = props => <Icon {...props} name='plus-outline' />;
+  const addMedicineIcon = props => <Icon {...props} name='plus-circle' />;
 
   const searchIcon = props => <Icon {...props} name='search-outline' />;
 
@@ -54,9 +54,11 @@ const MedicationScreen = props => {
     />
   );
 
+  const TopNavText = () => <Text style={{ fontWeight: 'bold' }}>MEDICATION LIST</Text>;
+
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      <TopNavigation alignment='center' title='MEDICATION LIST' accessoryRight={AddMedAction} />
+      <TopNavigation alignment='center' title={<TopNavText />} accessoryRight={AddMedAction} />
       <Layout style={styles.searchContainer}>
         <Input
           value={search}

@@ -20,7 +20,9 @@ import {
   Text,
   Layout,
   TopNavigation,
-  Avatar
+  TopNavigationAction,
+  Avatar,
+  Toggle
 } from '@ui-kitten/components';
 import { useDispatch } from 'react-redux';
 
@@ -36,12 +38,20 @@ const AddMedicine = props => {
   const dispatch = useDispatch();
 
   const [medName, setMedName] = useState('');
-  const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
   const [amount, setAmount] = useState('');
+  const [whenNeeded, setWhenNeeded] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [quantity, setQuantity] = useState('');
+  const [packs, setPacks] = useState('');
+  const [quantitySum, setQuantitySum] = useState(null);
   const [expiryDate, setExpiryDate] = useState(null);
   const [imagePath, setImagePath] = useState();
   const [instructions, setInstructions] = useState('');
   const [selectedIcon, setSelectedIcon] = useState(null);
+
+  const [showEndDate, setShowEndDate] = useState(true);
+  const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -69,6 +79,51 @@ const AddMedicine = props => {
 
   const instructionsChangeHandler = text => {
     setInstructions(text);
+  };
+
+  const whenNeededHandler = () => {
+    setWhenNeeded(!whenNeeded);
+  };
+
+  const showEDHandler = () => {
+    setShowEndDate(!showEndDate);
+    setEndDate(null);
+  };
+
+  const quantityChangeHandler = quantity => {
+    setQuantity(quantity);
+    calculateSum(quantity, packs);
+  };
+
+  const packsChangeHandler = packs => {
+    setPacks(packs);
+    calculateSum(quantity, packs);
+  };
+
+  const calculateSum = (quantity, packs) => {
+    const qty = !isNaN(parseInt(quantity)) ? parseInt(quantity) : 0;
+    const sets = !isNaN(parseInt(packs)) ? parseInt(packs) : 0;
+    let noun;
+
+    if (drugType === 'Capsules') {
+      noun = 'Capsules';
+    } else if (drugType === 'Tablets') {
+      noun = 'Tablets';
+    } else if (drugType === 'Syrup') {
+      if (sets === 1) {
+        noun = 'Bottle';
+      } else {
+        noun = 'Bottles';
+      }
+    } else if (drugType === 'Cream') {
+      if (sets === 1) {
+        noun = 'Tube';
+      } else {
+        noun = 'Tubes';
+      }
+    }
+
+    setQuantitySum(`${(qty * sets).toString()} ${noun}`);
   };
 
   const addMedicineHandler = async () => {
@@ -109,13 +164,29 @@ const AddMedicine = props => {
     props.navigation.goBack();
   };
 
+  const renderCloseAction = () => (
+    <TopNavigationAction
+      icon={CloseIcon}
+      onPress={() => {
+        clearInputs();
+        props.navigation.goBack();
+      }}
+    />
+  );
+
   const clearInputs = () => {
     setMedName('');
+    setWhenNeeded(false);
+    setStartDate(null);
+    setEndDate(null);
     setExpiryDate(null);
+    setQuantitySum(null);
+    setQuantity('');
+    setPacks('');
     setImagePath(null);
     setInstructions('');
     setAmount('');
-    setSelectedIcon('');
+    setSelectedIcon(null);
     setIsLoading(false);
   };
 
@@ -127,8 +198,12 @@ const AddMedicine = props => {
 
   const tDate = new Date();
   const maxDate = new Date(tDate.getFullYear() + 10, tDate.getMonth(), tDate.getDay());
+  const minStartDate = new Date(tDate.getFullYear() - 100, tDate.getMonth(), tDate.getDay());
+  const maxStartDate = new Date(tDate.getFullYear() + 1, tDate.getMonth(), tDate.getDay());
 
   const InputLabel = props => <Text style={[styles.inputLabel, props.style]}>{props.title}</Text>;
+
+  const TopNavText = () => <Text style={{ fontWeight: 'bold' }}>ADD MEDICINE</Text>;
 
   const renderIconSelector = () => {
     let iconType;
@@ -171,11 +246,12 @@ const AddMedicine = props => {
   };
 
   return (
-    <Layout>
-      <KeyboardAvoidingView style={styles.addMedicineView}>
-        <ScrollView>
-          <TopNavigation alignment='center' title='ADD MEDICINE' />
+    <Layout style={{ flex: 1 }}>
+      <TopNavigation alignment='center' title={<TopNavText />} accessoryRight={renderCloseAction} />
+      <ScrollView>
+        <KeyboardAvoidingView style={styles.addMedicineView}>
           <View style={styles.addSV}>
+            {/* Medicine Name */}
             <View style={styles.inputContainer}>
               <Input
                 label={<InputLabel title='Medicine Name' />}
@@ -185,6 +261,7 @@ const AddMedicine = props => {
                 autoFocus={true}
               />
             </View>
+            {/* Dosage per single consumption */}
             <View style={{ flexDirection: 'row' }}>
               <View style={{ flex: 0.7, marginRight: 5, marginTop: 2 }}>
                 <Select
@@ -207,9 +284,110 @@ const AddMedicine = props => {
                 />
               </View>
             </View>
+            {/* Medicine Icon */}
             {renderIconSelector()}
+            {/* Period of Medication */}
+            <View style={{ ...styles.inputContainer, flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 0.5 }}>
+                <InputLabel style={{ fontSize: 14 }} title='Take when needed' />
+              </View>
+              <View style={{ flex: 0.5 }}>
+                <Toggle
+                  checked={whenNeeded}
+                  style={{ alignSelf: 'flex-end' }}
+                  onChange={whenNeededHandler}
+                />
+              </View>
+            </View>
             <View style={styles.inputContainer}>
-              <InputLabel style={{ marginBottom: 8 }} title='Expiry Date' />
+              <Datepicker
+                date={startDate}
+                onSelect={setStartDate}
+                accessoryRight={CalendarIcon}
+                backdropStyle={styles.backdrop}
+                min={minStartDate}
+                max={maxStartDate}
+                label={<InputLabel style={{ marginBottom: 8 }} title='Start Date' />}
+              />
+            </View>
+            <View style={{ ...styles.inputContainer, flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 0.5 }}>
+                <InputLabel style={{ fontSize: 14 }} title='Forever' />
+              </View>
+              <View style={{ flex: 0.5 }}>
+                <Toggle
+                  checked={showEndDate}
+                  style={{ alignSelf: 'flex-end' }}
+                  onChange={showEDHandler}
+                />
+              </View>
+            </View>
+            <View
+              style={[
+                styles.inputContainer,
+                { display: !showEndDate && !whenNeeded ? 'flex' : 'none' }
+              ]}
+            >
+              <Datepicker
+                date={endDate}
+                onSelect={setEndDate}
+                accessoryRight={CalendarIcon}
+                backdropStyle={styles.backdrop}
+                min={new Date()}
+                max={maxDate}
+                label={<InputLabel style={{ marginBottom: 8 }} title='End Date' />}
+              />
+            </View>
+            {/* Total Quantity */}
+
+            <View style={styles.inputContainer}>
+              <View style={{ flexDirection: 'row' }}>
+                <View style={{ flex: 0.5, marginRight: 5 }}>
+                  <Input
+                    label={
+                      <InputLabel
+                        title={`No. of ${
+                          drugType === 'Capsules' || drugType === 'Tablets'
+                            ? 'Pack/s'
+                            : drugType === 'Cream'
+                            ? 'Tube/s'
+                            : drugType === 'Syrup'
+                            ? 'Bottle/s'
+                            : 'Set/s'
+                        }`}
+                      />
+                    }
+                    keyboardType='numeric'
+                    value={packs}
+                    onChangeText={packsChangeHandler}
+                  />
+                </View>
+                <View style={{ flex: 0.5, marginLeft: 5 }}>
+                  <Input
+                    label={<InputLabel title='Quantity' />}
+                    keyboardType='numeric'
+                    value={quantity}
+                    onChangeText={quantityChangeHandler}
+                  />
+                </View>
+              </View>
+              {quantitySum && (
+                <View
+                  style={{ ...styles.inputContainer, flexDirection: 'row', alignItems: 'center' }}
+                >
+                  <View style={{ flex: 0.5 }}>
+                    <InputLabel style={{ fontSize: 14 }} title='Total' />
+                  </View>
+                  <View style={{ flex: 0.5 }}>
+                    <InputLabel
+                      style={{ fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-end' }}
+                      title={quantitySum}
+                    />
+                  </View>
+                </View>
+              )}
+            </View>
+            <View style={styles.inputContainer}>
               <Datepicker
                 date={expiryDate}
                 onSelect={setExpiryDate}
@@ -217,11 +395,14 @@ const AddMedicine = props => {
                 backdropStyle={styles.backdrop}
                 min={new Date()}
                 max={maxDate}
+                label={<InputLabel style={{ marginBottom: 8 }} title='Expiry Date' />}
               />
             </View>
+            {/* Medicine Image */}
             <View style={styles.inputContainer}>
               <AddMedicineImage loading={isLoading} setImage={imageChangeHandler} />
             </View>
+            {/* Instructions */}
             <View style={styles.inputContainer}>
               <Input
                 label={<InputLabel title='Instructions' />}
@@ -232,6 +413,7 @@ const AddMedicine = props => {
                 numberOfLines={3}
               />
             </View>
+            {/* Actions */}
             <View style={styles.btnContainer}>
               <View style={styles.btn}>
                 <Button
@@ -249,15 +431,14 @@ const AddMedicine = props => {
               </View>
             </View>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </ScrollView>
     </Layout>
   );
 };
 
 const styles = StyleSheet.create({
   addMedicineView: {
-    justifyContent: 'center',
     alignItems: 'center'
   },
   addSV: {
