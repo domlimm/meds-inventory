@@ -127,11 +127,14 @@ const AddMedicine = props => {
   };
 
   const addMedicineHandler = async () => {
-    let dosage = {
+    const dosage = {
       type: drugType,
       amount: amount.toString(),
       unit: drugMeasurements[drugType]
     };
+
+    const sd = startDate ? startDate.toLocaleDateString('en-GB') : '';
+    const ed = endDate ? endDate.toLocaleDateString('en-GB') : '';
 
     try {
       setIsLoading(true);
@@ -144,7 +147,11 @@ const AddMedicine = props => {
           dosage,
           imagePath,
           selectedIcon,
-          remarks
+          instructions,
+          whenNeeded,
+          sd,
+          ed,
+          quantitySum
         )
       );
       setIsLoading(false);

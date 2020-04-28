@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Drawer, DrawerItem, Icon, Button, Text, Layout, IndexPath } from '@ui-kitten/components';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, StatusBar } from 'react-native';
 import { useSelector } from 'react-redux';
 import firebase from '../firebase';
 
@@ -25,19 +25,6 @@ const HistoryIcon = props => <Icon {...props} name='checkmark-square-outline' />
 
 const LogoutIcon = props => <Icon {...props} name='log-out' />;
 
-const defaultNavOptions = {
-  headerStyle: {
-    backgroundColor: Platform.OS === 'android' ? '#3366FF' : ''
-  },
-  headerTitleStyle: {
-    fontFamily: 'open-sans-bold'
-  },
-  headerBackTitleStyle: {
-    fontFamily: 'open-sans'
-  },
-  headerTintColor: Platform.OS === 'android' ? 'white' : '#ccc'
-};
-
 const Header = () => {
   const name = useSelector(state => state.auth.name);
   return (
@@ -50,6 +37,15 @@ const Header = () => {
 
 const DrawerContent = ({ navigation, state }) => {
   const selectedIndex = new IndexPath(state.index);
+
+  if (state.routes[state.index] === 'MedicineAdd') {
+    StatusBar.setBackgroundColor('#74ADA2');
+    StatusBar.setBarStyle('dark-content');
+  } else {
+    StatusBar.setBackgroundColor('#FFFFFF');
+    StatusBar.setBarStyle('dark-content');
+  }
+
   return (
     <SafeAreaView style={styles.customDrawer}>
       <Drawer
@@ -93,10 +89,7 @@ const MedicineSide = () => (
 );
 
 const DrawerNavigator = () => (
-  <DrawerNav.Navigator
-    screenOptions={defaultNavOptions}
-    drawerContent={props => <DrawerContent {...props} />}
-  >
+  <DrawerNav.Navigator drawerContent={props => <DrawerContent {...props} />}>
     <DrawerNav.Screen name='Medication' component={MedicineSide} />
     <DrawerNav.Screen name='Schedule' component={ScheduleScreen} />
     <DrawerNav.Screen name='History' component={HistoryScreen} />
@@ -106,7 +99,7 @@ const DrawerNavigator = () => (
 const AuthStackNavigator = createStackNavigator();
 
 const AuthNavigator = () => (
-  <AuthStackNavigator.Navigator headerMode='none' screenOptions={defaultNavOptions}>
+  <AuthStackNavigator.Navigator headerMode='none'>
     <AuthStackNavigator.Screen name='Auth' component={AuthScreen} />
   </AuthStackNavigator.Navigator>
 );
@@ -114,7 +107,6 @@ const AuthNavigator = () => (
 export default AppNavigator = () => {
   const [isAuth, setAuth] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  // const new_user = useSelector((state) => state.user.new_user);
 
   const authHandler = () => {
     setLoading(true);

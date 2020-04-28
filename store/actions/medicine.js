@@ -21,17 +21,18 @@ export const retrieveMedication = () => {
             new Medicine(
               key,
               resData[key].name,
+              resData[key].takeWhenNeeded,
+              resData[key].startDate,
+              resData[key].endDate,
               null,
-              null,
-              null,
-              null,
-              null,
+              resData[key].quantitySum,
               resData[key].expiry,
               resData[key].dosage,
               resData[key].imageUrl,
               resData[key].iconId,
               resData[key].instructions,
-              resData[key].configured
+              resData[key].scheduleConfigured,
+              resData[key].refillConfigured
             )
           );
         }
@@ -44,7 +45,18 @@ export const retrieveMedication = () => {
   };
 };
 
-export const addMedicine = (name, expiry, dosage, imageUrl, iconId, instructions) => {
+export const addMedicine = (
+  name,
+  expiry,
+  dosage,
+  imageUrl,
+  iconId,
+  instructions,
+  whenNeeded,
+  startDate,
+  endDate,
+  quantitySum
+) => {
   return async dispatch => {
     //Passing null to update() will remove the data at this location.
 
@@ -86,7 +98,12 @@ export const addMedicine = (name, expiry, dosage, imageUrl, iconId, instructions
               expiry: expiry,
               dosage: dosage,
               instructions: instructions,
-              configured: false
+              takeWhenNeeded: whenNeeded,
+              startDate: startDate,
+              endDate: endDate,
+              quantitySum: quantitySum,
+              scheduleConfigured: false,
+              refillConfigured: false
             };
             const updates = {};
             updates[`/users/${userId}/medicine/${medicineKey}`] = medicineWithImage;
@@ -121,7 +138,12 @@ export const addMedicine = (name, expiry, dosage, imageUrl, iconId, instructions
       expiry: expiry,
       dosage: dosage,
       instructions: instructions,
-      configured: false
+      takeWhenNeeded: whenNeeded,
+      startDate: startDate,
+      endDate: endDate,
+      quantitySum: quantitySum,
+      scheduleConfigured: false,
+      refillConfigured: false
     };
 
     const updates = {};

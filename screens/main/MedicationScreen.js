@@ -14,6 +14,8 @@ import {
 import MedicineItem from '../../components/MedicineItem';
 import * as medicineActions from '../../store/actions/medicine';
 
+const { height, width } = Dimensions.get('window');
+
 const MedicationScreen = props => {
   const dispatch = useDispatch();
 
@@ -47,6 +49,8 @@ const MedicationScreen = props => {
 
   const clearIcon = props => <Icon {...props} name='close-outline' onPress={clearSearch} />;
 
+  const MenuIcon = props => <Icon {...props} name='menu' />;
+
   const AddMedAction = () => (
     <TopNavigationAction
       icon={addMedicineIcon}
@@ -54,11 +58,20 @@ const MedicationScreen = props => {
     />
   );
 
+  const renderDrawerAction = () => (
+    <TopNavigationAction icon={MenuIcon} onPress={() => props.navigation.toggleDrawer()} />
+  );
+
   const TopNavText = () => <Text style={{ fontWeight: 'bold' }}>MEDICATION LIST</Text>;
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      <TopNavigation alignment='center' title={<TopNavText />} accessoryRight={AddMedAction} />
+      <TopNavigation
+        alignment='center'
+        title={<TopNavText />}
+        accessoryLeft={renderDrawerAction}
+        accessoryRight={AddMedAction}
+      />
       <Layout style={styles.searchContainer}>
         <Input
           value={search}
@@ -92,7 +105,13 @@ const MedicationScreen = props => {
                   iconId={medData.item.iconId}
                   dosage={medData.item.dosage}
                   instructions={medData.item.instructions}
-                  configured={medData.item.configured}
+                  scheduleConfigured={medData.item.scheduleConfigured}
+                  refillConfigured={medData.item.refillConfigured}
+                  takewhenNeeded={medData.item.takewhenNeeded}
+                  startDate={medData.item.startDate}
+                  endDate={medData.item.endDate}
+                  endDate={medData.item.endDate}
+                  quantitySum={medData.item.quantitySum}
                 />
               );
             }}
@@ -109,7 +128,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-    height: Dimensions.get('window').height,
+    height: height,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -119,7 +138,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8
   },
   searchInput: {
-    width: Dimensions.get('window').width * 0.92
+    width: width * 0.92
   }
 });
 

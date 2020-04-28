@@ -6,13 +6,14 @@ class Medicine {
     startDate,
     endDate,
     frequency,
-    quantity,
+    quantitySum,
     expiry,
     dosage,
     imageUrl,
     iconId,
     instructions,
-    configured
+    scheduleConfigured,
+    refillConfigured
   ) {
     this.id = id;
     this.name = name;
@@ -20,13 +21,14 @@ class Medicine {
     this.startDate = startDate;
     this.endDate = endDate;
     this.frequency = frequency;
-    this.quantity = quantity;
+    this.quantitySum = quantitySum;
     this.expiry = expiry;
     this.dosage = dosage;
     this.imageUrl = imageUrl;
     this.iconId = iconId;
     this.instructions = instructions;
-    this.configured = configured;
+    this.scheduleConfigured = scheduleConfigured;
+    this.refillConfigured = refillConfigured;
   }
 }
 
