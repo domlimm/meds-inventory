@@ -1,10 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Drawer, DrawerItem, Icon, Button, Text, Layout, IndexPath } from '@ui-kitten/components';
-import { View, StyleSheet, StatusBar } from 'react-native';
+import {
+  Drawer,
+  DrawerItem,
+  Icon,
+  Button,
+  Text,
+  Layout,
+  IndexPath,
+  Toggle,
+  Divider
+} from '@ui-kitten/components';
+import { View, StyleSheet, StatusBar, TouchableOpacity, Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 import firebase from '../firebase';
 
@@ -17,13 +27,7 @@ import AddMedicineScreen from '../screens/main/AddMedicine';
 import MedicineDetailScreen from '../screens/main/MedicineDetailScreen';
 import { logout } from '../store/actions/auth';
 
-const InfoIcon = props => <Icon {...props} name='shopping-bag-outline' />;
-
-const ScheduleIcon = props => <Icon {...props} name='calendar-outline' />;
-
-const HistoryIcon = props => <Icon {...props} name='checkmark-square-outline' />;
-
-const LogoutIcon = props => <Icon {...props} name='log-out' />;
+const { height } = Dimensions.get('window');
 
 const Header = () => {
   const name = useSelector(state => state.auth.name);
@@ -38,6 +42,24 @@ const Header = () => {
 const DrawerContent = ({ navigation, state }) => {
   const selectedIndex = new IndexPath(state.index);
 
+  const [nightMode, toggleNightMode] = useState(false);
+
+  const InfoIcon = props => <Icon {...props} name='shopping-bag-outline' />;
+
+  const ScheduleIcon = props => <Icon {...props} name='calendar-outline' />;
+
+  const HistoryIcon = props => <Icon {...props} name='checkmark-square-outline' />;
+
+  const LogoutIcon = props => <Icon {...props} name='log-out' />;
+
+  const NightIcon = props => (
+    <Icon {...props} style={{ width: 20, height: 20 }} name='moon-outline' />
+  );
+
+  const nightModeHandler = () => {
+    toggleNightMode(!nightMode);
+  };
+
   if (state.routes[state.index] === 'MedicineAdd') {
     StatusBar.setBackgroundColor('#74ADA2');
     StatusBar.setBarStyle('dark-content');
@@ -48,26 +70,48 @@ const DrawerContent = ({ navigation, state }) => {
 
   return (
     <SafeAreaView style={styles.customDrawer}>
-      <Drawer
-        onSelect={index => navigation.navigate(state.routeNames[index.row])}
-        selectedIndex={selectedIndex}
-        header={() => <Header />}
-      >
-        <DrawerItem title='MEDICATION' accessoryLeft={InfoIcon} />
-        <DrawerItem title='SCHEDULE' accessoryLeft={ScheduleIcon} />
-        <DrawerItem title='HISTORY' accessoryLeft={HistoryIcon} />
-      </Drawer>
-      <View style={styles.btnView}>
-        <Button
-          accessoryLeft={LogoutIcon}
-          style={styles.logoutBtn}
-          onPress={() => {
-            navigation.closeDrawer();
-            logout();
-          }}
+      <View style={styles.drawerView}>
+        <Drawer
+          onSelect={index => navigation.navigate(state.routeNames[index.row])}
+          selectedIndex={selectedIndex}
+          header={() => <Header />}
+          appearance='noDivider'
         >
-          LOGOUT
-        </Button>
+          <DrawerItem title='MEDICATION' accessoryLeft={InfoIcon} />
+          <DrawerItem title='SCHEDULE' accessoryLeft={ScheduleIcon} />
+          <DrawerItem title='HISTORY' accessoryLeft={HistoryIcon} />
+        </Drawer>
+      </View>
+      <Divider />
+      <View style={styles.miscView}>
+        <View style={styles.preferencesView}>
+          <Text style={{ paddingHorizontal: 10 }} category='h6'>
+            Preferences
+          </Text>
+          <TouchableOpacity activeOpacity={1} onPress={nightModeHandler} style={styles.nightMode}>
+            <View style={{ flex: 0.8, flexDirection: 'row', alignItems: 'center' }}>
+              <NightIcon />
+              <Text category='s1' style={{ paddingLeft: 10 }}>
+                Night Mode
+              </Text>
+            </View>
+            <View style={{ flex: 0.2, justifyContent: 'flex-end', flexDirection: 'row' }}>
+              <Toggle checked={nightMode} onChange={nightModeHandler} />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.logoutView}>
+          <Button
+            accessoryLeft={LogoutIcon}
+            style={styles.logoutBtn}
+            onPress={() => {
+              navigation.closeDrawer();
+              logout();
+            }}
+          >
+            LOGOUT
+          </Button>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -146,7 +190,21 @@ const styles = StyleSheet.create({
   customDrawer: {
     flex: 1
   },
-  btnView: {
+  drawerView: {
+    flex: height < 560 ? 0.4 : 0.26
+  },
+  miscView: {
+    flex: height < 560 ? 0.6 : 0.74,
+    marginTop: 10
+  },
+  preferencesView: {},
+  nightMode: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginTop: 10
+  },
+  logoutView: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
