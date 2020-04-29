@@ -107,7 +107,7 @@ const MedicationScreen = props => {
                   instructions={medData.item.instructions}
                   scheduleConfigured={medData.item.scheduleConfigured}
                   refillConfigured={medData.item.refillConfigured}
-                  takewhenNeeded={medData.item.takewhenNeeded}
+                  takewhenNeeded={!!medData.item.takewhenNeeded}
                   startDate={medData.item.startDate}
                   endDate={medData.item.endDate}
                   endDate={medData.item.endDate}

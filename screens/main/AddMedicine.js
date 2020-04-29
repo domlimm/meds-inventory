@@ -32,7 +32,7 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 import * as medActions from '../../store/actions/medicine';
 import { pillImages, syrupImages, creamImages } from '../../constants/drugType';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const AddMedicine = props => {
   const dispatch = useDispatch();
@@ -44,12 +44,16 @@ const AddMedicine = props => {
   const [endDate, setEndDate] = useState(null);
   const [quantity, setQuantity] = useState('');
   const [packs, setPacks] = useState('');
+  const [totalSum, setTotalSum] = useState('');
   const [quantitySum, setQuantitySum] = useState(null);
   const [expiryDate, setExpiryDate] = useState(null);
   const [imagePath, setImagePath] = useState();
   const [instructions, setInstructions] = useState('');
   const [selectedIcon, setSelectedIcon] = useState(null);
 
+  const [sdToday, setSdToday] = useState(true);
+  const [amountType, setAmountType] = useState('');
+  const [disableQtyField, setDisableQtyField] = useState(false);
   const [showEndDate, setShowEndDate] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
   const [error, setError] = useState(null);
@@ -63,6 +67,20 @@ const AddMedicine = props => {
     }
   }, [error]);
 
+  useEffect(() => {
+    setQuantitySum(null);
+    setQuantity('');
+    setPacks('');
+    setDisableQtyField(drugType === 'Cream' || drugType === 'Syrup');
+    setAmountType(drugMeasurements[drugType]);
+
+    if (drugType === 'Cream' || drugType === 'Syrup') {
+      setQuantity('1');
+    } else {
+      setQuantity('');
+    }
+  }, [drugType]);
+
   const medNameChangeHandler = value => {
     setMedName(value);
   };
@@ -71,7 +89,12 @@ const AddMedicine = props => {
     setImagePath(imagePath);
   };
 
-  const renderSelectItem = title => <SelectItem key={title} title={title} />;
+  const renderSelectItem = title =>
+    title === 'Cream' ? (
+      <SelectItem key={title} disabled title={title} />
+    ) : (
+      <SelectItem key={title} title={title} />
+    );
 
   const amtHandler = amt => {
     setAmount(amt.toString());
@@ -88,6 +111,11 @@ const AddMedicine = props => {
   const showEDHandler = () => {
     setShowEndDate(!showEndDate);
     setEndDate(null);
+  };
+
+  const isTodayHandler = () => {
+    setSdToday(!sdToday);
+    setStartDate(null);
   };
 
   const quantityChangeHandler = quantity => {
@@ -117,23 +145,28 @@ const AddMedicine = props => {
       }
     } else if (drugType === 'Cream') {
       if (sets === 1) {
-        noun = 'Tube';
+        noun = 'Salve';
       } else {
-        noun = 'Tubes';
+        noun = 'Salves';
       }
     }
 
     setQuantitySum(`${(qty * sets).toString()} ${noun}`);
+    setTotalSum((qty * sets).toString());
   };
 
   const addMedicineHandler = async () => {
     const dosage = {
       type: drugType,
-      amount: amount.toString(),
-      unit: drugMeasurements[drugType]
+      amount: drugType !== 'Cream' ? amount.toString() : 'Use',
+      unit: drugType !== 'Cream' ? drugMeasurements[drugType] : 'as needed'
     };
 
-    const sd = startDate ? startDate.toLocaleDateString('en-GB') : '';
+    const sd = startDate
+      ? startDate.toLocaleDateString('en-GB')
+      : sdToday
+      ? new Date().toLocaleDateString('en-GB')
+      : '';
     const ed = endDate ? endDate.toLocaleDateString('en-GB') : '';
 
     try {
@@ -151,7 +184,7 @@ const AddMedicine = props => {
           whenNeeded,
           sd,
           ed,
-          quantitySum
+          totalSum
         )
       );
       setIsLoading(false);
@@ -193,8 +226,11 @@ const AddMedicine = props => {
     setImagePath(null);
     setInstructions('');
     setAmount('');
+    setDisableQtyField(false);
     setSelectedIcon(null);
     setIsLoading(false);
+    setAmountType('');
+    setTotalSum('');
   };
 
   const SaveIcon = props => <Icon {...props} name='save-outline' />;
@@ -283,7 +319,7 @@ const AddMedicine = props => {
               </View>
               <View style={{ flex: 0.3 }}>
                 <Input
-                  label={<InputLabel title='Amount' />}
+                  label={<InputLabel title={`Amount (${amountType})`} />}
                   keyboardType='numeric'
                   value={amount}
                   onChangeText={amtHandler}
@@ -306,7 +342,19 @@ const AddMedicine = props => {
                 />
               </View>
             </View>
-            <View style={styles.inputContainer}>
+            <View style={{ ...styles.inputContainer, flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 0.5 }}>
+                <InputLabel style={{ fontSize: 14 }} title='Starting Today' />
+              </View>
+              <View style={{ flex: 0.5 }}>
+                <Toggle
+                  checked={sdToday}
+                  style={{ alignSelf: 'flex-end' }}
+                  onChange={isTodayHandler}
+                />
+              </View>
+            </View>
+            <View style={[styles.inputContainer, { display: !sdToday ? 'flex' : 'none' }]}>
               <Datepicker
                 date={startDate}
                 onSelect={setStartDate}
@@ -329,12 +377,7 @@ const AddMedicine = props => {
                 />
               </View>
             </View>
-            <View
-              style={[
-                styles.inputContainer,
-                { display: !showEndDate && !whenNeeded ? 'flex' : 'none' }
-              ]}
-            >
+            <View style={[styles.inputContainer, { display: !showEndDate ? 'flex' : 'none' }]}>
               <Datepicker
                 date={endDate}
                 onSelect={setEndDate}
@@ -346,7 +389,6 @@ const AddMedicine = props => {
               />
             </View>
             {/* Total Quantity */}
-
             <View style={styles.inputContainer}>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flex: 0.5, marginRight: 5 }}>
@@ -357,7 +399,7 @@ const AddMedicine = props => {
                           drugType === 'Capsules' || drugType === 'Tablets'
                             ? 'Pack/s'
                             : drugType === 'Cream'
-                            ? 'Tube/s'
+                            ? 'Salve/s'
                             : drugType === 'Syrup'
                             ? 'Bottle/s'
                             : 'Set/s'
@@ -375,6 +417,7 @@ const AddMedicine = props => {
                     keyboardType='numeric'
                     value={quantity}
                     onChangeText={quantityChangeHandler}
+                    disabled={disableQtyField}
                   />
                 </View>
               </View>

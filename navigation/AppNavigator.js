@@ -27,7 +27,7 @@ import AddMedicineScreen from '../screens/main/AddMedicine';
 import MedicineDetailScreen from '../screens/main/MedicineDetailScreen';
 import { logout } from '../store/actions/auth';
 
-const { height } = Dimensions.get('window');
+const { height } = Dimensions.get('screen');
 
 const Header = () => {
   const name = useSelector(state => state.auth.name);
@@ -85,7 +85,7 @@ const DrawerContent = ({ navigation, state }) => {
       <Divider />
       <View style={styles.miscView}>
         <View style={styles.preferencesView}>
-          <Text style={{ paddingHorizontal: 10 }} category='h6'>
+          <Text style={{ paddingHorizontal: 10 }} category='s1'>
             Preferences
           </Text>
           <TouchableOpacity activeOpacity={1} onPress={nightModeHandler} style={styles.nightMode}>
@@ -191,10 +191,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   drawerView: {
-    flex: height < 560 ? 0.4 : 0.26
+    flex: height < 560 ? 0.4 : 0.3
   },
   miscView: {
-    flex: height < 560 ? 0.6 : 0.74,
+    flex: height < 560 ? 0.6 : 0.7,
     marginTop: 10
   },
   preferencesView: {},

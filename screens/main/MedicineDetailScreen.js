@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import {
   ScrollView,
   Image,
@@ -16,8 +16,10 @@ import {
   TopNavigationAction,
   OverflowMenu,
   MenuItem,
-  Avatar
+  Avatar,
+  Divider
 } from '@ui-kitten/components';
+import { withBadge } from 'react-native-elements';
 import * as Progress from 'react-native-progress';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -30,6 +32,8 @@ const MedicineDetailScreen = props => {
   const { medData, iconUrl } = props.route.params;
   const [showMenu, setShowMenu] = useState(false);
 
+  console.log('medData', medData);
+
   const EditIcon = props => <Icon {...props} name='edit-outline' />;
 
   const DeleteIcon = props => <Icon {...props} name='trash-2-outline' />;
@@ -37,6 +41,15 @@ const MedicineDetailScreen = props => {
   const BackIcon = props => <Icon {...props} name='arrow-back-outline' />;
 
   const MenuIcon = props => <Icon {...props} name='more-vertical-outline' />;
+
+  const NotificationIcon = props => <Icon {...props} name='bell-outline' />;
+
+  const BadgedNotiIcon = withBadge(2, {
+    top: -4,
+    right: -2,
+    badgeStyle: styles.notiIcon,
+    status: 'success'
+  })(NotificationIcon);
 
   const RightIcon = props => (
     <Icon
@@ -53,10 +66,16 @@ const MedicineDetailScreen = props => {
   const renderMenuAction = () => <TopNavigationAction icon={MenuIcon} onPress={toggleMenu} />;
 
   const renderRightActions = () => (
-    <OverflowMenu anchor={renderMenuAction} visible={showMenu} onBackdropPress={toggleMenu}>
-      <MenuItem accessoryLeft={EditIcon} title='EDIT' />
-      <MenuItem accessoryLeft={DeleteIcon} title='DELETE' />
-    </OverflowMenu>
+    <Fragment>
+      <TopNavigationAction
+        icon={BadgedNotiIcon}
+        onPress={() => console.log('Show notifications')}
+      />
+      <OverflowMenu anchor={renderMenuAction} visible={showMenu} onBackdropPress={toggleMenu}>
+        <MenuItem accessoryLeft={EditIcon} title='EDIT' />
+        <MenuItem accessoryLeft={DeleteIcon} title='DELETE' />
+      </OverflowMenu>
+    </Fragment>
   );
 
   const renderBackAction = () => (
@@ -111,9 +130,10 @@ const MedicineDetailScreen = props => {
               <Avatar source={iconUrl} size='giant' />
             </View>
           </View>
+          <Divider />
           <View style={styles.contentQuantity}>
             <Text category='s2' style={styles.title}>
-              Inventory (37/50) amend later
+              Inventory (37/50) bottles/tubes/yada left
             </Text>
             <Progress.Bar
               color='#2E89F7'
@@ -121,28 +141,6 @@ const MedicineDetailScreen = props => {
               progress={0.74}
               style={{ marginVertical: 8 }}
             />
-          </View>
-          <View>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>test</Text>
-            <Text>last test</Text>
           </View>
           {/* <View style={{ flexDirection: 'row' }}>
             <View style={{ flex: 0.5 }}>
@@ -186,7 +184,6 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   contentContainer: {
-    width: '100%',
     flex: 0.64,
     elevation: 5,
     borderTopLeftRadius: 25,
@@ -195,6 +192,9 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 5,
     zIndex: 2
+  },
+  notiIcon: {
+    color: '#FFFFFF'
   },
   contentHeader: {
     flexDirection: 'row',

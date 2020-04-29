@@ -9,6 +9,7 @@ import { Image } from 'react-native';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { ThemeProvider } from 'react-native-elements';
 
 import './firebase';
 import { default as baseTheme } from './utils/custom-theme.json';
@@ -71,7 +72,9 @@ export default function App() {
         customMapping={customMapping}
         theme={{ ...eva.light, ...baseTheme }}
       >
-        <AppNavigator />
+        <ThemeProvider>
+          <AppNavigator />
+        </ThemeProvider>
       </ApplicationProvider>
     </Provider>
   );
