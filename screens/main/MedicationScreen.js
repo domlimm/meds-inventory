@@ -111,6 +111,7 @@ const MedicationScreen = props => {
                   startDate={medData.item.startDate}
                   endDate={medData.item.endDate}
                   endDate={medData.item.endDate}
+                  usedSum={medData.item.usedSum}
                   quantitySum={medData.item.quantitySum}
                 />
               );

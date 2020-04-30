@@ -184,6 +184,7 @@ const AddMedicine = props => {
           whenNeeded,
           sd,
           ed,
+          null,
           totalSum
         )
       );

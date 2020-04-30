@@ -53,7 +53,7 @@ const DrawerContent = ({ navigation, state }) => {
   const LogoutIcon = props => <Icon {...props} name='log-out' />;
 
   const NightIcon = props => (
-    <Icon {...props} style={{ width: 20, height: 20 }} name='moon-outline' />
+    <Icon {...props} style={[props.style, { width: 20, height: 20 }]} name='moon-outline' />
   );
 
   const nightModeHandler = () => {

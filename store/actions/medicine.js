@@ -25,6 +25,7 @@ export const retrieveMedication = () => {
               resData[key].startDate,
               resData[key].endDate,
               null,
+              resData[key].usedSum,
               resData[key].quantitySum,
               resData[key].expiry,
               resData[key].dosage,
@@ -55,6 +56,7 @@ export const addMedicine = (
   whenNeeded,
   startDate,
   endDate,
+  usedSum,
   quantitySum
 ) => {
   return async dispatch => {
@@ -101,6 +103,7 @@ export const addMedicine = (
               takeWhenNeeded: whenNeeded,
               startDate: startDate,
               endDate: endDate,
+              usedSum: '0',
               quantitySum: quantitySum,
               scheduleConfigured: false,
               refillConfigured: false
@@ -141,6 +144,7 @@ export const addMedicine = (
       takeWhenNeeded: whenNeeded,
       startDate: startDate,
       endDate: endDate,
+      usedSum: '0',
       quantitySum: quantitySum,
       scheduleConfigured: false,
       refillConfigured: false

@@ -6,6 +6,7 @@ class Medicine {
     startDate,
     endDate,
     frequency,
+    usedSum,
     quantitySum,
     expiry,
     dosage,
@@ -21,6 +22,7 @@ class Medicine {
     this.startDate = startDate;
     this.endDate = endDate;
     this.frequency = frequency;
+    this.usedSum = usedSum;
     this.quantitySum = quantitySum;
     this.expiry = expiry;
     this.dosage = dosage;

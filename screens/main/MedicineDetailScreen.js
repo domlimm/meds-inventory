@@ -44,17 +44,34 @@ const MedicineDetailScreen = props => {
 
   const NotificationIcon = props => <Icon {...props} name='bell-outline' />;
 
-  const BadgedNotiIcon = withBadge(2, {
+  const TrueIcon = props => (
+    <Icon
+      {...props}
+      style={[props.style, { marginHorizontal: 10, width: 24, height: 24 }]}
+      name='checkmark-outline'
+      fill='#166242'
+    />
+  );
+
+  const FalseIcon = props => (
+    <Icon
+      {...props}
+      style={[props.style, { marginHorizontal: 10, width: 24, height: 24 }]}
+      name='close-outline'
+      fill='#83112D'
+    />
+  );
+
+  const BadgedNotiIcon = withBadge(10, {
     top: -4,
-    right: -2,
-    badgeStyle: styles.notiIcon,
+    right: -4,
     status: 'success'
   })(NotificationIcon);
 
   const RightIcon = props => (
     <Icon
       {...props}
-      style={{ width: 12, height: 12, marginTop: 6, marginHorizontal: 5 }}
+      style={[props.style, { width: 12, height: 12, marginTop: 6, marginHorizontal: 5 }]}
       name='chevron-right'
     />
   );
@@ -96,6 +113,41 @@ const MedicineDetailScreen = props => {
     </View>
   );
 
+  let inventoryText = 'Inventory - ';
+  let remainingSum = (medData.quantitySum - medData.usedSum).toString();
+  let dType = medData.dosage.type;
+  let percentage = Math.floor((parseInt(remainingSum) / parseInt(medData.quantitySum)) * 100);
+  let colorProgress = '#83DB93';
+
+  if (percentage <= 40 && percentage > 15) {
+    colorProgress = '#DBAE10';
+  } else if (percentage > 0 && percentage <= 15) {
+    colorProgress = '#E98478';
+  }
+
+  if (dType === 'Capsules' || dType === 'Tablets') {
+    if (remainingSum === '1') {
+      inventoryText += `${remainingSum}/${medData.quantitySum} ${dType.subString(
+        0,
+        dType.length - 1
+      )} left`;
+    } else {
+      inventoryText += `${remainingSum}/${medData.quantitySum} ${dType} left`;
+    }
+  } else if (dType === 'Syrup') {
+    if (remainingSum === '1') {
+      inventoryText += `${remainingSum}/${medData.quantitySum} Bottle left`;
+    } else {
+      inventoryText += `${remainingSum}/${medData.quantitySum} Bottles left`;
+    }
+  } else if (dType === 'Cream') {
+    if (remainingSum === '1') {
+      inventoryText += `${remainingSum}/${medData.quantitySum} Salve left`;
+    } else {
+      inventoryText += `${remainingSum}/${medData.quantitySum} Salves left`;
+    }
+  }
+
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
       {isFocused && <StatusBar barStyle='dark-content' backgroundColor='#74ADA2' />}
@@ -132,15 +184,20 @@ const MedicineDetailScreen = props => {
           </View>
           <Divider />
           <View style={styles.contentQuantity}>
-            <Text category='s2' style={styles.title}>
-              Inventory (37/50) bottles/tubes/yada left
+            <Text category='s2' style={[styles.title, { fontWeight: 'bold' }]}>
+              {inventoryText}
             </Text>
-            <Progress.Bar
-              color='#2E89F7'
-              width={width * 0.8}
-              progress={0.74}
-              style={{ marginVertical: 8 }}
-            />
+            <Progress.Bar color={colorProgress} width={width * 0.8} progress={percentage / 100} />
+          </View>
+          <View style={styles.contentPeriod}>
+            <View style={styles.periodTF}>
+              <Text category=''>When Needed</Text>
+              {medData.takeWhenNeeded === 'true' ? <TrueIcon /> : <FalseIcon />}
+            </View>
+            <View style={styles.periodTF}>
+              <Text>Forever</Text>
+              {medData.endDate === '' ? <TrueIcon /> : <FalseIcon />}
+            </View>
           </View>
           {/* <View style={{ flexDirection: 'row' }}>
             <View style={{ flex: 0.5 }}>
@@ -194,7 +251,7 @@ const styles = StyleSheet.create({
     zIndex: 2
   },
   notiIcon: {
-    color: '#FFFFFF'
+    backgroundColor: '#FFFFFF'
   },
   contentHeader: {
     flexDirection: 'row',
@@ -208,6 +265,19 @@ const styles = StyleSheet.create({
   contentQuantity: {
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  contentPeriod: {
+    flexDirection: 'row',
+    marginVertical: 20
+  },
+  periodTF: {
+    flex: 0.5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  periodText: {
+    fontWeight: 'bold'
   },
   detailContainer: {
     marginBottom: 20
