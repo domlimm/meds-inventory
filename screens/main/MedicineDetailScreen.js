@@ -17,7 +17,8 @@ import {
   OverflowMenu,
   MenuItem,
   Avatar,
-  Divider
+  Divider,
+  Button
 } from '@ui-kitten/components';
 import { withBadge } from 'react-native-elements';
 import * as Progress from 'react-native-progress';
@@ -43,6 +44,10 @@ const MedicineDetailScreen = props => {
   const MenuIcon = props => <Icon {...props} name='more-vertical-outline' />;
 
   const NotificationIcon = props => <Icon {...props} name='bell-outline' />;
+
+  const CalendarIcon = props => <Icon {...props} name='calendar-outline' />;
+
+  const RefillIcon = props => <Icon {...props} name='MedicineBoxOutlined' />;
 
   const TrueIcon = props => (
     <Icon
@@ -102,57 +107,160 @@ const MedicineDetailScreen = props => {
     />
   );
 
+  const MedicineHeader = () => (
+    <View style={styles.contentHeader}>
+      <View>
+        <Text category='h5'>{medData.name}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text category='s1' appearance='hint'>
+            {medData.dosage.type}
+          </Text>
+          <RightIcon />
+          <Text category='s1' appearance='hint'>
+            {`${medData.dosage.amount}${medData.dosage.unit}`}
+          </Text>
+        </View>
+      </View>
+      <View style={styles.medicineIcon}>
+        <Avatar source={iconUrl} size='giant' />
+      </View>
+    </View>
+  );
+
+  const MedicineSection = () => {
+    let inventoryText = 'Inventory - ';
+    let remainingSum = (medData.quantitySum - medData.usedSum).toString();
+    let dType = medData.dosage.type;
+    let percentage = Math.floor((parseInt(remainingSum) / parseInt(medData.quantitySum)) * 100);
+    let colorProgress = '#83DB93';
+
+    if (percentage <= 40 && percentage > 15) {
+      colorProgress = '#DBAE10';
+    } else if (percentage > 0 && percentage <= 15) {
+      colorProgress = '#E98478';
+    }
+
+    if (dType === 'Capsules' || dType === 'Tablets') {
+      if (remainingSum === '1') {
+        if (dType === 'Capsules') {
+          inventoryText += `${remainingSum}/${medData.quantitySum} Capsule left`;
+        } else if (dType === 'Tablets') {
+          inventoryText += `${remainingSum}/${medData.quantitySum} Tablet left`;
+        }
+      } else {
+        inventoryText += `${remainingSum}/${medData.quantitySum} ${dType} left`;
+      }
+    } else if (dType === 'Syrup') {
+      if (remainingSum === '1') {
+        inventoryText += `${remainingSum}/${medData.quantitySum} Bottle left`;
+      } else {
+        inventoryText += `${remainingSum}/${medData.quantitySum} Bottles left`;
+      }
+    } else if (dType === 'Cream') {
+      if (remainingSum === '1') {
+        inventoryText += `${remainingSum}/${medData.quantitySum} Salve left`;
+      } else {
+        inventoryText += `${remainingSum}/${medData.quantitySum} Salves left`;
+      }
+    }
+
+    return (
+      <View>
+        <View style={styles.contentQuantity}>
+          <Text category='s2' style={[styles.title, { fontWeight: 'bold' }]}>
+            {inventoryText}
+          </Text>
+          <Progress.Bar color={colorProgress} width={width * 0.8} progress={percentage / 100} />
+        </View>
+        <View style={styles.contentPeriod}>
+          <View style={styles.periodTFView}>
+            <View style={[styles.periodTF, { flex: 0.6 }]}>
+              <Text>When Needed</Text>
+              {medData.takeWhenNeeded === 'true' ? <TrueIcon /> : <FalseIcon />}
+            </View>
+            <View style={[styles.periodTF, { flex: 0.4 }]}>
+              <Text>Forever</Text>
+              {medData.endDate === '' ? <TrueIcon /> : <FalseIcon />}
+            </View>
+          </View>
+          <View style={styles.periodSEView}>
+            <View style={[styles.periodSE, { flex: 0.6 }]}>
+              <DetailContainer title='Start Date' value={medData.startDate} />
+            </View>
+            <View style={[styles.periodSE, { flex: 0.4 }]}>
+              <DetailContainer
+                title='End Date'
+                value={medData.endDate !== '' ? medData.endDate : '-'}
+              />
+            </View>
+          </View>
+        </View>
+        <DetailContainer
+          extraTitleStyle={styles.instructionsContainer}
+          title='Instructions'
+          value={medData.instructions}
+        />
+        <DividerContainer />
+      </View>
+    );
+  };
+
+  const ScheduleSection = () => {
+    return (
+      <View style={styles.scheduleSection}>
+        {medData.scheduleConfigured === false ? (
+          <Text category='s1' style={styles.configuredTitle}>
+            No schedule configured!
+          </Text>
+        ) : null}
+        <View style={styles.buttonView}>
+          <Button accessoryRight={CalendarIcon}>
+            {medData.scheduleConfigured === false ? 'CONFIGURE SCHEDULE' : 'EDIT SCHEDULE'}
+          </Button>
+        </View>
+        <DividerContainer />
+      </View>
+    );
+  };
+
+  const RefillSection = () => {
+    return (
+      <View style={styles.refillSection}>
+        {medData.refillConfigured === false ? (
+          <Text category='s1' style={styles.configuredTitle}>
+            No refill reminder set!
+          </Text>
+        ) : null}
+        <View style={styles.buttonView}>
+          <Button>
+            {medData.scheduleConfigured === false ? 'CONFIGURE REFILL' : 'EDIT REFILL'}
+          </Button>
+        </View>
+        <DividerContainer />
+      </View>
+    );
+  };
+
   const DetailContainer = props => (
     <View style={styles.detailContainer}>
       <Text appearance='hint' category='label' style={styles.title}>
         {props.title}
       </Text>
-      <Text category='h6' style={{ ...styles.value, ...props.extraTitleStyle }}>
-        {props.value}
-      </Text>
+      <Text style={{ ...styles.value, ...props.extraTitleStyle }}>{props.value}</Text>
     </View>
   );
 
-  let inventoryText = 'Inventory - ';
-  let remainingSum = (medData.quantitySum - medData.usedSum).toString();
-  let dType = medData.dosage.type;
-  let percentage = Math.floor((parseInt(remainingSum) / parseInt(medData.quantitySum)) * 100);
-  let colorProgress = '#83DB93';
-
-  if (percentage <= 40 && percentage > 15) {
-    colorProgress = '#DBAE10';
-  } else if (percentage > 0 && percentage <= 15) {
-    colorProgress = '#E98478';
-  }
-
-  if (dType === 'Capsules' || dType === 'Tablets') {
-    if (remainingSum === '1') {
-      inventoryText += `${remainingSum}/${medData.quantitySum} ${dType.subString(
-        0,
-        dType.length - 1
-      )} left`;
-    } else {
-      inventoryText += `${remainingSum}/${medData.quantitySum} ${dType} left`;
-    }
-  } else if (dType === 'Syrup') {
-    if (remainingSum === '1') {
-      inventoryText += `${remainingSum}/${medData.quantitySum} Bottle left`;
-    } else {
-      inventoryText += `${remainingSum}/${medData.quantitySum} Bottles left`;
-    }
-  } else if (dType === 'Cream') {
-    if (remainingSum === '1') {
-      inventoryText += `${remainingSum}/${medData.quantitySum} Salve left`;
-    } else {
-      inventoryText += `${remainingSum}/${medData.quantitySum} Salves left`;
-    }
-  }
+  const DividerContainer = () => (
+    <View style={styles.divide}>
+      <Divider />
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      {isFocused && <StatusBar barStyle='dark-content' backgroundColor='#74ADA2' />}
+      {isFocused && <StatusBar barStyle='dark-content' backgroundColor='#4BB09E' />}
       <TopNavigation
-        style={{ backgroundColor: '#74ADA2' }}
+        style={{ backgroundColor: '#4BB09E' }}
         accessoryLeft={renderBackAction}
         accessoryRight={renderRightActions}
       />
@@ -163,60 +271,12 @@ const MedicineDetailScreen = props => {
           <Text>No image taken!</Text>
         )}
       </Layout>
-      <Layout level='3' style={styles.contentContainer}>
+      <Layout level='2' style={styles.contentContainer}>
         <ScrollView style={{ flex: 1 }}>
-          <View style={styles.contentHeader}>
-            <View>
-              <Text category='h4'>{medData.name}</Text>
-              <View style={{ flexDirection: 'row' }}>
-                <Text category='s1' appearance='hint'>
-                  {medData.dosage.type}
-                </Text>
-                <RightIcon />
-                <Text category='s1' appearance='hint'>
-                  {`${medData.dosage.amount}${medData.dosage.unit}`}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.medicineIcon}>
-              <Avatar source={iconUrl} size='giant' />
-            </View>
-          </View>
-          <Divider />
-          <View style={styles.contentQuantity}>
-            <Text category='s2' style={[styles.title, { fontWeight: 'bold' }]}>
-              {inventoryText}
-            </Text>
-            <Progress.Bar color={colorProgress} width={width * 0.8} progress={percentage / 100} />
-          </View>
-          <View style={styles.contentPeriod}>
-            <View style={styles.periodTF}>
-              <Text category=''>When Needed</Text>
-              {medData.takeWhenNeeded === 'true' ? <TrueIcon /> : <FalseIcon />}
-            </View>
-            <View style={styles.periodTF}>
-              <Text>Forever</Text>
-              {medData.endDate === '' ? <TrueIcon /> : <FalseIcon />}
-            </View>
-          </View>
-          {/* <View style={{ flexDirection: 'row' }}>
-            <View style={{ flex: 0.5 }}>
-              <DetailContainer title='Name' value={medData.name} />
-              <DetailContainer
-                title='Dosage'
-                value={`${medData.dosage.amount}${medData.dosage.unit}`}
-              />
-            </View>
-            <View style={{ flex: 0.5 }}>
-              <DetailContainer title='Expiry' value={medData.expiry} />
-              <DetailContainer title='Form' value={medData.dosage.type} />
-            </View>
-          </View> */}
-          {/* <DetailContainer
-            extraTitleStyle={styles.remarksContainer}
-            title='Instructions'
-            value={medData.remarks}
-          /> */}
+          <MedicineHeader />
+          <MedicineSection />
+          <ScheduleSection />
+          <RefillSection />
         </ScrollView>
       </Layout>
     </SafeAreaView>
@@ -226,17 +286,18 @@ const MedicineDetailScreen = props => {
 const styles = StyleSheet.create({
   AndroidSafeArea: {
     flex: 1,
-    backgroundColor: '#74ADA2'
+    backgroundColor: '#4BB09E'
   },
   imageContainer: {
     flex: 0.36,
     width: width,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#74ADA2'
+    backgroundColor: '#4BB09E',
+    marginTop: -10
   },
   image: {
-    width: '90%',
+    width: '100%',
     height: '90%',
     borderRadius: 5
   },
@@ -262,34 +323,53 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     flexDirection: 'row'
   },
+  medicineSection: {},
+  scheduleSection: {},
+  refillSection: {},
   contentQuantity: {
     justifyContent: 'center',
     alignItems: 'center'
   },
   contentPeriod: {
-    flexDirection: 'row',
     marginVertical: 20
   },
-  periodTF: {
-    flex: 0.5,
+  periodTFView: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    marginVertical: 10
+  },
+  periodSEView: {
+    flexDirection: 'row',
+    marginTop: 10
+  },
+  periodTF: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  periodSE: {
+    flexDirection: 'row',
     alignItems: 'center'
   },
   periodText: {
     fontWeight: 'bold'
   },
   detailContainer: {
-    marginBottom: 20
+    marginBottom: 5
   },
   title: {
     marginBottom: 5
   },
-  value: {
-    fontSize: 18
-  },
-  remarksContainer: {
+  instructionsContainer: {
     fontSize: 15
+  },
+  configuredTitle: {
+    alignSelf: 'center',
+    fontWeight: 'bold'
+  },
+  buttonView: {
+    marginTop: 10
+  },
+  divide: {
+    marginVertical: 12
   }
 });
 

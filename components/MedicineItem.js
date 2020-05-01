@@ -40,7 +40,7 @@ const MedicineItem = props => {
 
 const styles = StyleSheet.create({
   medicineContainer: {
-    backgroundColor: '#7FCFAD',
+    backgroundColor: '#4BB09E',
     marginVertical: 10,
     width: width * 0.9,
     height: height * 0.11,
