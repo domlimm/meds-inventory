@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -14,17 +14,12 @@ import {
   Toggle,
   Divider
 } from '@ui-kitten/components';
-import { View, StyleSheet, StatusBar, TouchableOpacity, Dimensions } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 import firebase from '../firebase';
 
-import AuthScreen from '../screens/user/AuthScreen';
-import ScheduleScreen from '../screens/main/ScheduleScreen';
-import HistoryScreen from '../screens/main/HistoryScreen';
-import MedicationScreen from '../screens/main/MedicationScreen';
-import StartupScreen from '../screens/user/StartupScreen';
-import AddMedicineScreen from '../screens/main/AddMedicine';
-import MedicineDetailScreen from '../screens/main/MedicineDetailScreen';
+import { ThemeContext } from '../utils/theme-context';
+import * as Screens from '../screens';
 import { logout } from '../store/actions/auth';
 
 const { height } = Dimensions.get('screen');
@@ -43,6 +38,7 @@ const DrawerContent = ({ navigation, state }) => {
   const selectedIndex = new IndexPath(state.index);
 
   const [nightMode, toggleNightMode] = useState(false);
+  const themeContext = useContext(ThemeContext);
 
   const InfoIcon = props => <Icon {...props} name='shopping-bag-outline' />;
 
@@ -58,15 +54,16 @@ const DrawerContent = ({ navigation, state }) => {
 
   const nightModeHandler = () => {
     toggleNightMode(!nightMode);
+    themeContext.toggleTheme();
   };
 
-  if (state.routes[state.index] === 'MedicineAdd') {
-    StatusBar.setBackgroundColor('#74ADA2');
-    StatusBar.setBarStyle('dark-content');
-  } else {
-    StatusBar.setBackgroundColor('#FFFFFF');
-    StatusBar.setBarStyle('dark-content');
-  }
+  // if (state.routes[state.index] === 'MedicineDetail') {
+  //   StatusBar.setBackgroundColor('#4BB09E');
+  //   StatusBar.setBarStyle('dark-content');
+  // } else {
+  //   StatusBar.setBackgroundColor('#FFFFFF');
+  //   StatusBar.setBarStyle('dark-content');
+  // }
 
   return (
     <SafeAreaView style={styles.customDrawer}>
@@ -122,21 +119,43 @@ const MedicineSideStack = createStackNavigator();
 
 const MedicineSide = () => (
   <MedicineSideStack.Navigator initialRouteName='MedicineMain' headerMode='none'>
-    <MedicineSideStack.Screen name='MedicineMain' component={MedicationScreen} />
+    <MedicineSideStack.Screen name='MedicineMain' component={Screens.MedicationScreen} />
     <MedicineSideStack.Screen
       name='MedicineAdd'
-      component={AddMedicineScreen}
-      options={{ unmountOnBlur: true }}
+      component={Screens.AddMedicineScreen}
+      options={{
+        unmountOnBlur: true
+      }}
     />
-    <MedicineSideStack.Screen name='MedicineDetail' component={MedicineDetailScreen} />
+    <MedicineSideStack.Screen name='MedicineDetail' component={Screens.MedicineDetailScreen} />
+    <MedicineSideStack.Screen
+      name='MedicineAddRefill'
+      component={Screens.AddRefillScreen}
+      options={{
+        ...TransitionPresets.ModalPresentationIOS,
+        gestureEnabled: true,
+        cardOverlayEnabled: true,
+        cardShadowEnabled: true
+      }}
+    />
+    <MedicineSideStack.Screen
+      name='MedicineAddSchedule'
+      component={Screens.AddScheduleScreen}
+      options={{
+        ...TransitionPresets.ModalPresentationIOS,
+        gestureEnabled: true,
+        cardOverlayEnabled: true,
+        cardShadowEnabled: true
+      }}
+    />
   </MedicineSideStack.Navigator>
 );
 
 const DrawerNavigator = () => (
   <DrawerNav.Navigator drawerContent={props => <DrawerContent {...props} />}>
     <DrawerNav.Screen name='Medication' component={MedicineSide} />
-    <DrawerNav.Screen name='Schedule' component={ScheduleScreen} />
-    <DrawerNav.Screen name='History' component={HistoryScreen} />
+    <DrawerNav.Screen name='Schedule' component={Screens.ScheduleScreen} />
+    <DrawerNav.Screen name='History' component={Screens.HistoryScreen} />
   </DrawerNav.Navigator>
 );
 
@@ -144,7 +163,7 @@ const AuthStackNavigator = createStackNavigator();
 
 const AuthNavigator = () => (
   <AuthStackNavigator.Navigator headerMode='none'>
-    <AuthStackNavigator.Screen name='Auth' component={AuthScreen} />
+    <AuthStackNavigator.Screen name='Auth' component={Screens.AuthScreen} />
   </AuthStackNavigator.Navigator>
 );
 
@@ -180,7 +199,7 @@ export default AppNavigator = () => {
       ) : !isAuth & !isLoading ? (
         <AuthNavigator />
       ) : (
-        <StartupScreen />
+        <Screens.StartupScreen />
       )}
     </NavigationContainer>
   );

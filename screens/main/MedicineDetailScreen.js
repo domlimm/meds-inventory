@@ -47,7 +47,7 @@ const MedicineDetailScreen = props => {
 
   const CalendarIcon = props => <Icon {...props} name='calendar-outline' />;
 
-  const RefillIcon = props => <Icon {...props} name='MedicineBoxOutlined' />;
+  const RefillIcon = props => <Icon {...props} name='shopping-cart-outline' />;
 
   const TrueIcon = props => (
     <Icon
@@ -214,7 +214,12 @@ const MedicineDetailScreen = props => {
           </Text>
         ) : null}
         <View style={styles.buttonView}>
-          <Button accessoryRight={CalendarIcon}>
+          <Button
+            accessoryRight={CalendarIcon}
+            onPress={() =>
+              props.navigation.navigate('Medication', { screen: 'MedicineAddSchedule' })
+            }
+          >
             {medData.scheduleConfigured === false ? 'CONFIGURE SCHEDULE' : 'EDIT SCHEDULE'}
           </Button>
         </View>
@@ -232,7 +237,10 @@ const MedicineDetailScreen = props => {
           </Text>
         ) : null}
         <View style={styles.buttonView}>
-          <Button>
+          <Button
+            accessoryRight={RefillIcon}
+            onPress={() => props.navigation.navigate('Medication', { screen: 'MedicineAddRefill' })}
+          >
             {medData.scheduleConfigured === false ? 'CONFIGURE REFILL' : 'EDIT REFILL'}
           </Button>
         </View>
@@ -258,7 +266,7 @@ const MedicineDetailScreen = props => {
 
   return (
     <SafeAreaView style={styles.AndroidSafeArea}>
-      {isFocused && <StatusBar barStyle='dark-content' backgroundColor='#4BB09E' />}
+      {/* {isFocused && <StatusBar barStyle='dark-content' backgroundColor='#4BB09E' />} */}
       <TopNavigation
         style={{ backgroundColor: '#4BB09E' }}
         accessoryLeft={renderBackAction}

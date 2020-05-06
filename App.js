@@ -12,6 +12,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { ThemeProvider } from 'react-native-elements';
 
 import './firebase';
+import { ThemeContext } from './utils/theme-context';
 import { default as baseTheme } from './utils/custom-theme.json';
 import { default as customMapping } from './utils/custom-mapping.json';
 import { AntDesignIconsPack } from './utils/ant-design-icons';
@@ -45,6 +46,12 @@ const fetchImages = images => {
 
 export default function App() {
   const [assetsLoaded, setAssetsLoaded] = useState(false);
+  const [appTheme, setAppTheme] = useState('light');
+
+  const toggleTheme = () => {
+    const changeTheme = appTheme === 'light' ? 'dark' : 'light';
+    setAppTheme(changeTheme);
+  };
 
   console.disableYellowBox = true;
 
@@ -67,15 +74,17 @@ export default function App() {
   return (
     <Provider store={store}>
       <IconRegistry icons={[EvaIconsPack, AntDesignIconsPack]} />
-      <ApplicationProvider
-        {...eva}
-        customMapping={customMapping}
-        theme={{ ...eva.light, ...baseTheme }}
-      >
-        <ThemeProvider>
-          <AppNavigator />
-        </ThemeProvider>
-      </ApplicationProvider>
+      <ThemeContext.Provider value={{ appTheme, toggleTheme }}>
+        <ApplicationProvider
+          {...eva}
+          customMapping={customMapping}
+          theme={{ ...eva[appTheme], ...baseTheme }}
+        >
+          <ThemeProvider>
+            <AppNavigator />
+          </ThemeProvider>
+        </ApplicationProvider>
+      </ThemeContext.Provider>
     </Provider>
   );
 }
