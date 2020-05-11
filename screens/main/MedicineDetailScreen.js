@@ -1,13 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import {
-  ScrollView,
-  Image,
-  StyleSheet,
-  Dimensions,
-  SafeAreaView,
-  View,
-  StatusBar
-} from 'react-native';
+import { ScrollView, Image, StyleSheet, Dimensions, SafeAreaView, View } from 'react-native';
 import {
   Text,
   Layout,
@@ -33,7 +25,7 @@ const MedicineDetailScreen = props => {
   const { medData, iconUrl } = props.route.params;
   const [showMenu, setShowMenu] = useState(false);
 
-  console.log('medData', medData);
+  // console.log('medData', medData);
 
   const EditIcon = props => <Icon {...props} name='edit-outline' />;
 
@@ -41,7 +33,7 @@ const MedicineDetailScreen = props => {
 
   const BackIcon = props => <Icon {...props} name='arrow-back-outline' />;
 
-  const MenuIcon = props => <Icon {...props} name='more-vertical-outline' />;
+  const MenuIcon = props => <Icon {...props} name='more-horizontal-outline' />;
 
   const NotificationIcon = props => <Icon {...props} name='bell-outline' />;
 
@@ -197,7 +189,7 @@ const MedicineDetailScreen = props => {
         </View>
         <DetailContainer
           extraTitleStyle={styles.instructionsContainer}
-          title='Instructions'
+          title='Specific Instructions'
           value={medData.instructions}
         />
         <DividerContainer />
@@ -331,9 +323,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     flexDirection: 'row'
   },
-  medicineSection: {},
-  scheduleSection: {},
-  refillSection: {},
   contentQuantity: {
     justifyContent: 'center',
     alignItems: 'center'

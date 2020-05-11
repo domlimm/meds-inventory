@@ -2,8 +2,8 @@ export const drugTypes = ['Capsules', 'Cream', 'Syrup', 'Tablets'];
 
 export const drugMeasurements = {
   Capsules: 'pc',
-  Cream: 'ml',
-  Syrup: 'ml',
+  Cream: 'mL',
+  Syrup: 'mL',
   Tablets: 'pc'
 };
 

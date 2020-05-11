@@ -15,7 +15,6 @@ import './firebase';
 import { ThemeContext } from './utils/theme-context';
 import { default as baseTheme } from './utils/custom-theme.json';
 import { default as customMapping } from './utils/custom-mapping.json';
-import { AntDesignIconsPack } from './utils/ant-design-icons';
 import AppNavigator from './navigation/AppNavigator';
 import authReducer from './store/reducers/auth';
 import medReducer from './store/reducers/medicine';
@@ -73,7 +72,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <IconRegistry icons={[EvaIconsPack, AntDesignIconsPack]} />
+      <IconRegistry icons={EvaIconsPack} />
       <ThemeContext.Provider value={{ appTheme, toggleTheme }}>
         <ApplicationProvider
           {...eva}

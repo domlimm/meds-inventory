@@ -80,7 +80,7 @@ const DrawerContent = ({ navigation, state }) => {
         </Drawer>
       </View>
       <Divider />
-      <View style={styles.miscView}>
+      <Layout style={styles.miscView}>
         <View style={styles.preferencesView}>
           <Text style={{ paddingHorizontal: 10 }} category='s1'>
             Preferences
@@ -109,7 +109,7 @@ const DrawerContent = ({ navigation, state }) => {
             LOGOUT
           </Button>
         </View>
-      </View>
+      </Layout>
     </SafeAreaView>
   );
 };
@@ -132,20 +132,18 @@ const MedicineSide = () => (
       name='MedicineAddRefill'
       component={Screens.AddRefillScreen}
       options={{
-        ...TransitionPresets.ModalPresentationIOS,
+        ...TransitionPresets.ModalTransition,
         gestureEnabled: true,
-        cardOverlayEnabled: true,
-        cardShadowEnabled: true
+        cardOverlayEnabled: true
       }}
     />
     <MedicineSideStack.Screen
       name='MedicineAddSchedule'
       component={Screens.AddScheduleScreen}
       options={{
-        ...TransitionPresets.ModalPresentationIOS,
+        ...TransitionPresets.ModalTransition,
         gestureEnabled: true,
-        cardOverlayEnabled: true,
-        cardShadowEnabled: true
+        cardOverlayEnabled: true
       }}
     />
   </MedicineSideStack.Navigator>
@@ -214,7 +212,7 @@ const styles = StyleSheet.create({
   },
   miscView: {
     flex: height < 560 ? 0.6 : 0.7,
-    marginTop: 10
+    paddingTop: 10
   },
   preferencesView: {},
   nightMode: {

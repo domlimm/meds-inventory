@@ -92,7 +92,7 @@ const AuthScreen = props => {
               {isLogin ? 'Welcome back!' : 'Start tracking your medicine schedule!'}
             </Text>
           </View>
-          {!isLogin && nameInput}
+          {!isLogin ? nameInput : null}
           <Input
             label='Email'
             placeholder='Enter your E-mail'

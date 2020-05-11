@@ -194,14 +194,12 @@ const AddMedicine = props => {
       setError(err.message);
     }
 
-    clearInputs();
     props.navigation.goBack();
     // Amend to snackbar?
     Alert.alert('Success', 'Added Medicine', [{ text: 'Okay' }]);
   };
 
   const closeHandler = () => {
-    clearInputs();
     props.navigation.goBack();
   };
 
@@ -209,30 +207,29 @@ const AddMedicine = props => {
     <TopNavigationAction
       icon={CloseIcon}
       onPress={() => {
-        clearInputs();
         props.navigation.goBack();
       }}
     />
   );
 
-  const clearInputs = () => {
-    setMedName('');
-    setWhenNeeded(false);
-    setStartDate(null);
-    setEndDate(null);
-    setExpiryDate(null);
-    setQuantitySum(null);
-    setQuantity('');
-    setPacks('');
-    setImagePath(null);
-    setInstructions('');
-    setAmount('');
-    setDisableQtyField(false);
-    setSelectedIcon(null);
-    setIsLoading(false);
-    setAmountType('');
-    setTotalSum('');
-  };
+  // const clearInputs = () => {
+  //   setMedName('');
+  //   setWhenNeeded(false);
+  //   setStartDate(null);
+  //   setEndDate(null);
+  //   setExpiryDate(null);
+  //   setQuantitySum(null);
+  //   setQuantity('');
+  //   setPacks('');
+  //   setImagePath(null);
+  //   setInstructions('');
+  //   setAmount('');
+  //   setDisableQtyField(false);
+  //   setSelectedIcon(null);
+  //   setIsLoading(false);
+  //   setAmountType('');
+  //   setTotalSum('');
+  // };
 
   const SaveIcon = props => <Icon {...props} name='save-outline' />;
 
@@ -294,7 +291,7 @@ const AddMedicine = props => {
       <TopNavigation alignment='center' title={<TopNavText />} accessoryRight={renderCloseAction} />
       <ScrollView>
         <KeyboardAvoidingView style={styles.addMedicineView}>
-          <View style={styles.addSV}>
+          <Layout style={styles.elementsView}>
             {/* Medicine Name */}
             <View style={styles.inputContainer}>
               <Input
@@ -422,7 +419,7 @@ const AddMedicine = props => {
                   />
                 </View>
               </View>
-              {quantitySum && (
+              {quantitySum ? (
                 <View
                   style={{ ...styles.inputContainer, flexDirection: 'row', alignItems: 'center' }}
                 >
@@ -436,7 +433,7 @@ const AddMedicine = props => {
                     />
                   </View>
                 </View>
-              )}
+              ) : null}
             </View>
             <View style={styles.inputContainer}>
               <Datepicker
@@ -456,7 +453,7 @@ const AddMedicine = props => {
             {/* Instructions */}
             <View style={styles.inputContainer}>
               <Input
-                label={<InputLabel title='Instructions' />}
+                label={<InputLabel title='Specific Instructions' />}
                 value={instructions}
                 onChangeText={instructionsChangeHandler}
                 style={styles.input}
@@ -481,7 +478,7 @@ const AddMedicine = props => {
                 </Button>
               </View>
             </View>
-          </View>
+          </Layout>
         </KeyboardAvoidingView>
       </ScrollView>
     </Layout>
@@ -492,7 +489,7 @@ const styles = StyleSheet.create({
   addMedicineView: {
     alignItems: 'center'
   },
-  addSV: {
+  elementsView: {
     width: width * 0.9,
     paddingHorizontal: 8
   },
@@ -520,8 +517,7 @@ const styles = StyleSheet.create({
     flex: 0.5
   },
   inputLabel: {
-    fontSize: 14,
-    color: '#070D0D'
+    fontSize: 14
   },
   backdrop: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)'
