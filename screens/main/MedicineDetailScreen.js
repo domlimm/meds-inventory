@@ -25,8 +25,6 @@ const MedicineDetailScreen = props => {
   const { medData, iconUrl } = props.route.params;
   const [showMenu, setShowMenu] = useState(false);
 
-  // console.log('medData', medData);
-
   const EditIcon = props => <Icon {...props} name='edit-outline' />;
 
   const DeleteIcon = props => <Icon {...props} name='trash-2-outline' />;
@@ -168,7 +166,7 @@ const MedicineDetailScreen = props => {
           <View style={styles.periodTFView}>
             <View style={[styles.periodTF, { flex: 0.6 }]}>
               <Text>When Needed</Text>
-              {medData.takeWhenNeeded === 'true' ? <TrueIcon /> : <FalseIcon />}
+              {medData.takeWhenNeeded === 'yes' ? <TrueIcon /> : <FalseIcon />}
             </View>
             <View style={[styles.periodTF, { flex: 0.4 }]}>
               <Text>Forever</Text>
@@ -275,7 +273,7 @@ const MedicineDetailScreen = props => {
         <ScrollView style={{ flex: 1 }}>
           <MedicineHeader />
           <MedicineSection />
-          <ScheduleSection />
+          {medData.takeWhenNeeded === 'no' ? <ScheduleSection /> : null}
           <RefillSection />
         </ScrollView>
       </Layout>

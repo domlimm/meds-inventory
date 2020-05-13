@@ -212,25 +212,6 @@ const AddMedicine = props => {
     />
   );
 
-  // const clearInputs = () => {
-  //   setMedName('');
-  //   setWhenNeeded(false);
-  //   setStartDate(null);
-  //   setEndDate(null);
-  //   setExpiryDate(null);
-  //   setQuantitySum(null);
-  //   setQuantity('');
-  //   setPacks('');
-  //   setImagePath(null);
-  //   setInstructions('');
-  //   setAmount('');
-  //   setDisableQtyField(false);
-  //   setSelectedIcon(null);
-  //   setIsLoading(false);
-  //   setAmountType('');
-  //   setTotalSum('');
-  // };
-
   const SaveIcon = props => <Icon {...props} name='save-outline' />;
 
   const CloseIcon = props => <Icon {...props} name='close-outline' />;
@@ -304,18 +285,18 @@ const AddMedicine = props => {
             </View>
             {/* Dosage per single consumption */}
             <View style={{ flexDirection: 'row' }}>
-              <View style={{ flex: 0.7, marginRight: 5, marginTop: 2 }}>
+              <View style={{ flex: 0.65, marginRight: 5 }}>
                 <Select
                   label={<InputLabel title='Form' />}
                   onSelect={index => setSelectedIndex(index)}
                   selectedIndex={selectedIndex}
-                  caption='Per single consumption (Amount)'
+                  caption='Per single consumption (Amt)'
                   value={drugType}
                 >
                   {drugTypes.map(renderSelectItem)}
                 </Select>
               </View>
-              <View style={{ flex: 0.3 }}>
+              <View style={{ flex: 0.35 }}>
                 <Input
                   label={<InputLabel title={`Amount (${amountType})`} />}
                   keyboardType='numeric'

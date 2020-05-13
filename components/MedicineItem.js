@@ -9,17 +9,21 @@ const { width, height } = Dimensions.get('window');
 const collatedIcons = [...pillImages, ...creamImages, ...syrupImages];
 
 const MedicineItem = props => {
-  const { name, dosage, iconId } = props;
+  const { medData } = props;
   const navigation = useNavigation();
 
-  let iconUrl = collatedIcons.find(icon => icon.id === iconId).path;
+  let iconUrl = collatedIcons.find(icon => icon.id === medData.iconId).path;
+  let name = medData.name;
+  let dType = medData.dosage.type;
+  let dAmt = medData.dosage.amount;
+  let dUnit = medData.dosage.unit;
 
   return (
     <TouchableOpacity
       style={styles.medicineContainer}
       onPress={() =>
         navigation.navigate('MedicineDetail', {
-          medData: props,
+          medData: medData,
           iconUrl: iconUrl
         })
       }
@@ -31,7 +35,7 @@ const MedicineItem = props => {
           {name}
         </Text>
         <Text category='s2'>
-          {dosage.type}, {dosage.amount} {dosage.unit}
+          {dType}, {dAmt} {dUnit}
         </Text>
       </View>
     </TouchableOpacity>

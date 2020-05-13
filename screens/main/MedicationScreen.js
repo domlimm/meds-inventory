@@ -96,25 +96,7 @@ const MedicationScreen = props => {
             onRefresh={medication_handler}
             keyExtractor={med => med.id}
             renderItem={medData => {
-              return (
-                <MedicineItem
-                  id={medData.item.id}
-                  name={medData.item.name}
-                  expiry={medData.item.expiry}
-                  imageUrl={medData.item.imageUrl}
-                  iconId={medData.item.iconId}
-                  dosage={medData.item.dosage}
-                  instructions={medData.item.instructions}
-                  scheduleConfigured={medData.item.scheduleConfigured}
-                  refillConfigured={medData.item.refillConfigured}
-                  takewhenNeeded={!!medData.item.takewhenNeeded}
-                  startDate={medData.item.startDate}
-                  endDate={medData.item.endDate}
-                  endDate={medData.item.endDate}
-                  usedSum={medData.item.usedSum}
-                  quantitySum={medData.item.quantitySum}
-                />
-              );
+              return <MedicineItem medData={medData.item} />;
             }}
           />
         )}

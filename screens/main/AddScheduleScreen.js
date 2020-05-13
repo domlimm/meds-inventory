@@ -24,7 +24,7 @@ const AddScheduleScreen = props => {
   const [showInfo, setShowInfo] = useState(false);
   const [modeIndex, setModeIndex] = useState(null);
 
-  const [freqIndex, setFreqIndex] = useState(new IndexPath(1));
+  const [freqIndex, setFreqIndex] = useState(new IndexPath(0));
 
   const [dailyIndex, setDailyIndex] = useState(new IndexPath(0));
 
@@ -99,9 +99,7 @@ const AddScheduleScreen = props => {
 
   const InputLabel = props => <Text style={[styles.inputLabel, props.style]}>{props.title}</Text>;
 
-  {
-    /* <Layout style={styles.inputContainer}></Layout>; */
-  }
+  /* <Layout style={styles.inputContainer}></Layout>; */
 
   const freq = [
     'Daily',
