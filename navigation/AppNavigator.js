@@ -35,7 +35,7 @@ const Header = () => {
 };
 
 const DrawerContent = ({ navigation, state }) => {
-  const selectedIndex = new IndexPath(state.index);
+  // const selectedIndex = new IndexPath(state.index);
 
   const [nightMode, toggleNightMode] = useState(false);
   const themeContext = useContext(ThemeContext);
@@ -70,7 +70,7 @@ const DrawerContent = ({ navigation, state }) => {
       <View style={styles.drawerView}>
         <Drawer
           onSelect={index => navigation.navigate(state.routeNames[index.row])}
-          selectedIndex={selectedIndex}
+          selectedIndex={state.index}
           header={() => <Header />}
           appearance='noDivider'
         >

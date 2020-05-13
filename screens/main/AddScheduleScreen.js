@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, KeyboardAvoidingView, Dimensions, Platform } from 'react-native';
 import {
   Layout,
@@ -31,7 +31,10 @@ const AddScheduleScreen = props => {
   const [hourIndex, setHourIndex] = useState(new IndexPath(0));
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [hasTime, setHasTime] = useState(false);
-  const [time, setTime] = useState(new Date().setHours(0, 0, 0, 0));
+  const [time, setTime] = useState(null);
+  const [lastIntake, setLastIntake] = useState(new IndexPath(0));
+  const [triggered, setTriggered] = useState(false);
+  const [lastIntakeArr, setLastIntakeArr] = useState([]);
 
   const CloseIcon = props => <Icon {...props} name='close-outline' />;
 
@@ -108,14 +111,20 @@ const AddScheduleScreen = props => {
     'Day/s of Week'
   ];
   const intakeDaily = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-  const intakeHourly = ['0.5', '1', '2', '3', '4', '6', '8', '12'];
+  const intakeHourly = ['Select Interval', '0.5', '1', '2', '3', '4', '6', '8', '12'];
 
   const selected_freq_index = freqIndex.row;
   const freqDisplay = freq[selected_freq_index];
 
   const renderFreqItems = data => <SelectItem title={data} key={data} />;
   const renderIntakeItems = data => <SelectItem title={data} key={data} />;
-
+  const renderHourSpecificItems = data => {
+    if (data.trim() === button_time.trim()) {
+      return <SelectItem key={data} disabled={true} title={`${data} - START TIME`} />;
+    } else {
+      return <SelectItem key={data} title={data} />;
+    }
+  };
   const Daily_Element = () => (
     <Layout style={styles.inputContainer}>
       <Layout style={styles.inputContainer}>
@@ -146,24 +155,75 @@ const AddScheduleScreen = props => {
   button_minutes = button_minutes < 10 ? '0' + button_minutes : button_minutes;
 
   const button_time = `${button_hour}:${button_minutes} ${
-    new Date(time).getHours() > 12 ? 'PM' : 'AM'
+    new Date(time).getHours() >= 12 ? 'PM' : 'AM'
   }`;
 
   const onTimeChangeHandler = selected_time => {
-    console.log('selected_time', selected_time);
     setTimePickerVisibility(Platform.OS === 'ios');
     setHasTime(true);
     setTime(selected_time);
+    setTriggered(true);
   };
 
+  let hourly_index = hourIndex.row;
+
+  const generate_lastintake = () => {
+    let tempArr = [];
+    let first_intake = new Date(time);
+    let first_hour = first_intake.getHours();
+    let first_minute = first_intake.getMinutes();
+    let first_intake_minutes = first_hour * 60 + first_minute;
+    const meridiem = ['AM', 'PM'];
+    const interval = intakeHourly[hourIndex.row];
+    const final_interval = parseFloat(interval) * 60;
+    const day_tot_minutes = 24 * 60;
+    const total_daily_cycle = day_tot_minutes + first_intake_minutes;
+    setLastIntakeArr([]);
+
+    console.log('--new--');
+
+    for (let i = 0; first_intake_minutes < total_daily_cycle; i++) {
+      console.log('[start] first_intake_minutes', first_intake_minutes);
+      let hourA = Math.floor(first_intake_minutes / 60);
+      let hour = hourA >= 24 ? hourA - 24 : hourA;
+      let minute = first_intake_minutes % 60;
+
+      tempArr[i] = `${hour === 0 || hour === 12 ? '12' : (hour % 12).toString().slice(-2)}:${(
+        '0' + minute
+      ).slice(-2)} ${meridiem[hour < 12 ? 0 : 1]}`;
+
+      first_intake_minutes += final_interval;
+
+      console.log('hour', hour);
+      console.log('minute', minute);
+      console.log('i', i);
+      console.log('tempArr[i]', tempArr[i]);
+      console.log('[end] first_intake_minutes', first_intake_minutes);
+      console.log('==================================================');
+    }
+
+    // slice array later based on last intake, then each of the timing save into db as array.
+    // Bug : any timing doesnt go past 12am next day
+    setLastIntakeArr(tempArr);
+    setLastIntake(new IndexPath(0));
+  };
+
+  useEffect(() => {
+    if (triggered) {
+      generate_lastintake();
+    }
+  }, [hourly_index, time, triggered]);
+
   const Hours_Element = () => (
-    <Layout style={styles.inputContainer}>
+    <Layout>
       <Layout style={styles.inputContainer}>
         <Select
           label={<InputLabel title='Specify No. of Hour/s' />}
-          onSelect={index => setHourIndex(index)}
+          onSelect={index => {
+            setHourIndex(index);
+          }}
           selectedIndex={hourIndex}
-          value={intakeHourly[hourIndex.row]}
+          value={intakeHourly[hourly_index]}
         >
           {intakeHourly.map(renderIntakeItems)}
         </Select>
@@ -177,8 +237,7 @@ const AddScheduleScreen = props => {
           isVisible={isTimePickerVisible}
           onConfirm={onTimeChangeHandler}
           onCancel={showTimeHandler}
-          isDarkModeEnabled={true}
-          date={new Date().setHours(0, 0, 0, 0)}
+          date={new Date(new Date().setHours(0, 0, 0, 0))}
         />
       </Layout>
     </Layout>
@@ -223,7 +282,21 @@ const AddScheduleScreen = props => {
                 {selected_freq_index === 0 ? (
                   <Daily_Element />
                 ) : selected_freq_index === 1 ? (
-                  <Hours_Element />
+                  <Layout style={styles.inputContainer}>
+                    <Hours_Element />
+                    {time ? (
+                      <Layout style={styles.inputContainer}>
+                        <Select
+                          label={<InputLabel title='Set Last Intake' />}
+                          onSelect={index => setLastIntake(index)}
+                          selectedIndex={lastIntake}
+                          value={lastIntakeArr[lastIntake.row]}
+                        >
+                          {lastIntakeArr.map(renderHourSpecificItems)}
+                        </Select>
+                      </Layout>
+                    ) : null}
+                  </Layout>
                 ) : selected_freq_index === 2 ? null : selected_freq_index ===
                   3 ? null : selected_freq_index === 4 ? null : selected_freq_index ===
                   5 ? null : null}
