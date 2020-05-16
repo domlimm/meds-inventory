@@ -43,7 +43,7 @@ const MedicationScreen = props => {
     setSearch('');
   };
 
-  const addMedicineIcon = props => <Icon {...props} name='plus-circle' />;
+  const addMedicineIcon = props => <Icon {...props} name='plus-circle-outline' />;
 
   const searchIcon = props => <Icon {...props} name='search-outline' />;
 

@@ -1,5 +1,12 @@
 import React, { useState, useEffect, memo } from 'react';
-import { StyleSheet, ScrollView, KeyboardAvoidingView, Dimensions, Platform } from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Dimensions,
+  Platform,
+  FlatList
+} from 'react-native';
 import {
   Layout,
   Modal,
@@ -18,8 +25,9 @@ import {
   List,
   ListItem
 } from '@ui-kitten/components';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import TimePickerModal from 'react-native-modal-datetime-picker';
 
+import DailyReminderItem from '../../components/DailyReminderItem';
 import LoadingIndicator from '../../components/LoadingIndicator';
 
 const { height, width } = Dimensions.get('window');
@@ -32,8 +40,8 @@ const AddScheduleScreen = props => {
   const [freqIndex, setFreqIndex] = useState(new IndexPath(0));
 
   // Daily selection States
-  const [dailyIndex, setDailyIndex] = useState(new IndexPath(0));
-  const [dailyStartTime, setDailyStartTime] = useState(null);
+  const [dailyTimeIntakes, setDailyTimeIntakes] = useState([]);
+  const [dailyTimePicker, setDailyTimePicker] = useState(false);
 
   // Hourly selection States
   const [hourIndex, setHourIndex] = useState(new IndexPath(0));
@@ -43,13 +51,15 @@ const AddScheduleScreen = props => {
   const [hourlyLastIntake, setHourlyLastIntake] = useState(new IndexPath(0));
   const [triggered, setTriggered] = useState(false);
   const [lastIntakeArr, setLastIntakeArr] = useState([]);
-  const [lastIntakePos, setLastIntakePos] = useState(null);
+  const [lastIntakePos, setLastIntakePos] = useState(null); // Map to lastIntakeArr
 
   const CloseIcon = props => <Icon {...props} name='close-outline' />;
 
   const InfoIcon = props => <Icon {...props} name='info-outline' />;
 
   const ClockIcon = props => <Icon {...props} name='clock-outline' />;
+
+  const AddIcon = props => <Icon {...props} name='plus-outline' />;
 
   const SettingIcon = props => (
     <Icon
@@ -117,7 +127,6 @@ const AddScheduleScreen = props => {
     'Alternate Days',
     'Day/s of Week'
   ];
-  const intakeDaily = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'Custom'];
   const intakeHourly = ['Select Interval', '0.5', '1', '2', '3', '4', '6', '8', '12'];
 
   const selected_freq_index = freqIndex.row;
@@ -129,34 +138,79 @@ const AddScheduleScreen = props => {
     }
     return <SelectItem title={data} key={data} />;
   };
+
   const renderIntakeItems = data => <SelectItem title={data} key={data} />;
 
-  const dailyPos = dailyIndex.row;
+  const showDailyTimePicker = () => {
+    setDailyTimePicker(!dailyTimePicker);
+  };
+
+  const dailyTimePickerHandler = selected_time => {
+    setDailyTimePicker(Platform.OS === 'ios');
+
+    let button_hour = new Date(selected_time).getHours();
+    button_hour = button_hour % 12;
+    button_hour = button_hour ? button_hour : 12;
+
+    let button_minutes = new Date(selected_time).getMinutes();
+    button_minutes = button_minutes < 10 ? '0' + button_minutes : button_minutes;
+
+    const button_time = `${button_hour}:${button_minutes} ${
+      new Date(selected_time).getHours() >= 12 ? 'PM' : 'AM'
+    }`;
+
+    setDailyTimeIntakes([...dailyTimeIntakes, { id: dailyIntakeCount, time: button_time }]);
+  };
+
+  const dailyIntakeCount = dailyTimeIntakes.length;
+
+  console.log('dailyTimeIntakes', dailyTimeIntakes);
+
+  const removeDailyIntakeHandler = id => {
+    let temp_dIntakeArr = dailyTimeIntakes;
+    temp_dIntakeArr = temp_dIntakeArr.filter(data => data.id !== id);
+    setDailyTimeIntakes(temp_dIntakeArr);
+  };
 
   const Daily_Element = () => (
     <Layout style={styles.inputContainer}>
-      <Layout style={styles.inputContainer}>
-        <Select
-          label={<InputLabel title='No. of Intake/s Daily' />}
-          onSelect={index => setDailyIndex(index)}
-          selectedIndex={dailyIndex}
-          value={intakeDaily[dailyPos]}
-        >
-          {intakeDaily.map(renderIntakeItems)}
-        </Select>
-      </Layout>
-
-      {dailyPos === intakeDaily.length - 1 ? (
-        <Layout style={styles.inputContainer}>
-          <Button onPress={() => console.log('Add time elements')}>ADD REMINDER (counter)</Button>
+      {dailyIntakeCount > 0 ? (
+        <Layout>
+          <InputLabel
+            title={
+              dailyIntakeCount > 0
+                ? `No. of Intakes: ${dailyIntakeCount}`
+                : 'Start Selecting Intake Time'
+            }
+          />
+          <Layout style={styles.inputContainer}>
+            <FlatList
+              data={dailyTimeIntakes}
+              renderItem={({ item }) => (
+                <DailyReminderItem
+                  itemData={item}
+                  deleteTime={() => removeDailyIntakeHandler(item.id)}
+                />
+              )}
+              keyExtractor={item => item.id}
+            />
+          </Layout>
         </Layout>
       ) : null}
+      <Layout style={styles.inputContainer}>
+        <Button onPress={showDailyTimePicker} accessoryRight={AddIcon} status='info'>
+          ADD REMINDER
+        </Button>
+        <TimePickerModal
+          mode='time'
+          isVisible={dailyTimePicker}
+          onConfirm={dailyTimePickerHandler}
+          onCancel={showDailyTimePicker}
+          date={new Date(new Date().setHours(0, 0, 0, 0))}
+        />
+      </Layout>
     </Layout>
   );
-
-  const showTimeHandler = () => {
-    setTimePickerVisibility(!isTimePickerVisible);
-  };
 
   let button_hour = new Date(hourlyStartTime).getHours();
   button_hour = button_hour % 12;
@@ -168,6 +222,10 @@ const AddScheduleScreen = props => {
   const button_time = `${button_hour}:${button_minutes} ${
     new Date(hourlyStartTime).getHours() >= 12 ? 'PM' : 'AM'
   }`;
+
+  const showTimeHandler = () => {
+    setTimePickerVisibility(!isTimePickerVisible);
+  };
 
   const onTimeChangeHandler = selected_time => {
     setTimePickerVisibility(Platform.OS === 'ios');
@@ -211,26 +269,39 @@ const AddScheduleScreen = props => {
 
   const [selectedLIntake, setSelectedLIntake] = useState(false);
 
-  const renderHourSpecificItems = ({ item, index }) => {
-    if (item.trim() === button_time.trim()) {
+  const RenderHourSpecificItems = props => {
+    if (props.itemData.item.trim() === button_time.trim()) {
       return (
         <ListItem
-          key={index}
-          title={() => <InputLabel title={`${item} - START TIME`} style={{ fontWeight: 'bold' }} />}
+          key={props.itemData.index}
+          title={() => (
+            <InputLabel
+              title={`${props.itemData.item} - START TIME`}
+              style={{ fontWeight: 'bold' }}
+            />
+          )}
           disabled={true}
         />
       );
     } else {
       return (
         <ListItem
-          key={index}
-          style={[selectedLIntake === index && { backgroundColor: '#4BB09E', borderRadius: 3 }]}
+          key={props.itemData}
+          style={[
+            selectedLIntake === props.itemData.index && {
+              backgroundColor: '#4BB09E',
+              borderRadius: 3
+            }
+          ]}
           title={() => (
-            <InputLabel title={item} style={[selectedLIntake === index && { fontWeight: '700' }]} />
+            <InputLabel
+              title={props.itemData.item}
+              style={[selectedLIntake === props.itemData.index && { fontWeight: '700' }]}
+            />
           )}
           onPress={() => {
-            setSelectedLIntake(index);
-            setLastIntakePos(index);
+            setSelectedLIntake(props.itemData.index);
+            setLastIntakePos(props.itemData.index);
           }}
         />
       );
@@ -265,7 +336,7 @@ const AddScheduleScreen = props => {
         >
           {isLoading ? 'LOADING' : hasTime ? `TIME SELECTED: ${button_time}` : 'SET START TIME'}
         </Button>
-        <DateTimePickerModal
+        <TimePickerModal
           mode='time'
           isVisible={isTimePickerVisible}
           onConfirm={onTimeChangeHandler}
@@ -290,7 +361,7 @@ const AddScheduleScreen = props => {
           <List
             data={lastIntakeArr}
             ItemSeparatorComponent={Divider}
-            renderItem={renderHourSpecificItems}
+            renderItem={itemData => <RenderHourSpecificItems itemData={itemData} />}
             keyExtractor={item => item}
             horizontal={true}
             selectedProp={selectedLIntake}
